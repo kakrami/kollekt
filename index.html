@@ -1206,6 +1206,13 @@
       padding: 18px;
       background: rgba(0, 0, 0, 0.56);
       backdrop-filter: blur(10px);
+      overflow: hidden;
+      overscroll-behavior: contain;
+      touch-action: none;
+    }
+
+    .modal-backdrop .modal-card {
+      touch-action: auto;
     }
 
     .modal-backdrop.open { display: flex; }
@@ -1235,6 +1242,7 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.4;
+      white-space: pre-line;
     }
 
     .modal-actions {
@@ -2059,6 +2067,645 @@
         margin-left: 51px;
       }
     }
+
+
+    /* Swap Center */
+    #swapModal.modal-backdrop {
+      padding: 10px;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .swap-card {
+      width: min(640px, calc(100dvw - 20px));
+      height: auto;
+      max-height: calc(100dvh - 20px);
+      align-self: center;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
+      overflow: hidden;
+      padding: 12px;
+      transform: none;
+      animation: none;
+    }
+
+    .swap-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: start;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(133, 183, 163, 0.14);
+    }
+
+    .swap-head .modal-title {
+      margin-bottom: 3px;
+      font-size: 15px;
+      line-height: 1.15;
+    }
+
+    .swap-head .modal-message {
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .swap-close {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 999px;
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .swap-scroll {
+      display: grid;
+      gap: 8px;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 2px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
+    .swap-section {
+      display: grid;
+      gap: 7px;
+      padding: 8px;
+      border: 1px solid rgba(133, 183, 163, 0.18);
+      border-radius: 12px;
+      background: rgba(4, 12, 10, 0.38);
+    }
+
+    .swap-section-title {
+      color: #f3fff8;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .swap-section-note,
+    .swap-paste-helper {
+      color: rgba(190, 222, 207, 0.66);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.28;
+    }
+
+    .swap-paste-helper {
+      padding: 7px 8px;
+      border: 1px solid rgba(133, 183, 163, 0.16);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .swap-qr-panel {
+      display: grid;
+      grid-template-columns: 168px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .swap-qr-box {
+      width: 168px;
+      min-height: 168px;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      border: 1px solid rgba(133, 183, 163, 0.20);
+      border-radius: 14px;
+      background: rgba(4, 12, 10, 0.52);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      overflow: hidden;
+    }
+
+    .swap-qr-box img {
+      width: 100%;
+      max-width: 152px;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      background: #ffffff;
+    }
+
+    .swap-qr-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .swap-code-label {
+      color: rgba(190, 222, 207, 0.74);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .swap-code-note {
+      margin-top: -2px;
+    }
+
+    .swap-flow-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .swap-step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 24px;
+      padding: 4px 9px;
+      border: 1px solid rgba(133, 183, 163, 0.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.045);
+      color: rgba(237, 247, 241, 0.80);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .swap-step-pill .num {
+      width: 16px;
+      height: 16px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(32, 217, 130, 0.14);
+      color: #8dffc8;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .swap-text-details {
+      border: 1px solid rgba(133, 183, 163, 0.16);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      overflow: hidden;
+    }
+
+    .swap-text-details summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 11px;
+      color: rgba(237, 247, 241, 0.90);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .swap-text-details summary::-webkit-details-marker { display: none; }
+
+    .swap-text-details summary::after {
+      content: '⌄';
+      color: rgba(190, 222, 207, 0.70);
+      font-size: 14px;
+      line-height: 1;
+      transition: transform 0.18s ease;
+    }
+
+    .swap-text-details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .swap-text-body {
+      display: grid;
+      gap: 8px;
+      padding: 0 11px 11px;
+      border-top: 1px solid rgba(133, 183, 163, 0.12);
+    }
+
+    .swap-receive-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .swap-receive-actions button {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .swap-scan-panel,
+    .swap-manual-panel {
+      display: grid;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid rgba(133, 183, 163, 0.16);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .swap-scan-panel[hidden],
+    .swap-manual-panel[hidden] {
+      display: none !important;
+    }
+
+    .swap-status {
+      min-height: 18px;
+      color: rgba(190, 222, 207, 0.82);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.3;
+    }
+
+    .swap-status.success { color: #8dffc8; }
+    .swap-status.warn { color: #fbbf24; }
+    .swap-status.error { color: #fca5a5; }
+
+    .swap-video-shell {
+      position: relative;
+      border: 1px solid rgba(133, 183, 163, 0.20);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #030806;
+      aspect-ratio: 1 / 1;
+    }
+
+    .swap-video-shell video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #030806;
+    }
+
+    .swap-video-guide {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: grid;
+      place-items: center;
+    }
+
+    .swap-video-guide::before {
+      content: '';
+      width: min(66%, 220px);
+      height: min(66%, 220px);
+      border: 2px solid rgba(141, 255, 200, 0.90);
+      border-radius: 18px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.18);
+    }
+
+    .swap-inline-note {
+      color: rgba(190, 222, 207, 0.66);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.28;
+    }
+
+    .swap-textarea {
+      width: 100%;
+      min-height: 60px;
+      max-height: 120px;
+      resize: vertical;
+      padding: 7px 8px;
+      border: 1px solid rgba(133, 183, 163, 0.22);
+      border-radius: 10px;
+      background: rgba(4, 12, 10, 0.78);
+      color: var(--text);
+      font: 10px/1.32 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .swap-textarea:focus {
+      border-color: rgba(32, 217, 130, 0.72);
+      box-shadow: 0 0 0 3px rgba(32, 217, 130, 0.13), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .swap-partner-code {
+      min-height: 76px;
+      font-size: 11px;
+    }
+
+    .swap-button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .swap-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .swap-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 24px;
+      padding: 4px 8px;
+      border: 1px solid rgba(133, 183, 163, 0.18);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.045);
+      color: rgba(237, 247, 241, 0.86);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .swap-result {
+      display: grid;
+      gap: 10px;
+    }
+
+    .swap-result-empty {
+      padding: 13px;
+      border: 1px dashed rgba(133, 183, 163, 0.26);
+      border-radius: 13px;
+      color: rgba(190, 222, 207, 0.72);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.4;
+    }
+
+    .swap-totals {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .swap-total-card {
+      position: relative;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid rgba(133, 183, 163, 0.18);
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(32, 217, 130, 0.10), rgba(56, 189, 248, 0.05));
+    }
+
+    .swap-total-card.warning {
+      border-color: rgba(245, 158, 11, 0.38);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.10), rgba(32, 217, 130, 0.06));
+    }
+
+    .swap-total-label-row {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .swap-total-label-row .swap-total-label {
+      min-width: 0;
+      margin-top: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .swap-info-btn {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      min-height: 18px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(245, 158, 11, 0.70);
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+      box-shadow: none;
+      font-size: 12px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .swap-info-btn:hover,
+    .swap-info-btn:focus-visible {
+      border-color: rgba(245, 158, 11, 0.90);
+      background: rgba(245, 158, 11, 0.24);
+      color: #ffd37a;
+    }
+
+    .swap-info-tooltip {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 230;
+      display: none;
+      width: max-content;
+      max-width: min(280px, calc(100vw - 24px));
+      padding: 9px 10px;
+      border: 1px solid rgba(245, 158, 11, 0.44);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(30, 22, 10, 0.98), rgba(14, 12, 9, 0.98));
+      color: rgba(255, 246, 223, 0.94);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.42);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .swap-info-tooltip.open {
+      display: block;
+    }
+
+    .swap-info-tooltip-title {
+      margin-bottom: 3px;
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .swap-total-number {
+      color: #8dffc8;
+      font-size: 22px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .swap-total-label {
+      margin-top: 4px;
+      color: rgba(190, 222, 207, 0.68);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .swap-lists {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .swap-list {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .swap-list-title {
+      color: #f3fff8;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .swap-item-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 8px;
+      border: 1px solid rgba(133, 183, 163, 0.15);
+      border-radius: 11px;
+      background: rgba(12, 24, 20, 0.74);
+    }
+
+    .swap-item-name {
+      min-width: 0;
+      color: rgba(237, 247, 241, 0.92);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .swap-item-meta {
+      margin-top: 2px;
+      color: rgba(190, 222, 207, 0.58);
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .swap-count-control {
+      display: inline-grid;
+      grid-template-columns: 24px 34px 24px;
+      align-items: center;
+      border: 1px solid rgba(133, 183, 163, 0.20);
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(4, 12, 10, 0.64);
+    }
+
+    .swap-count-control button {
+      width: 24px;
+      height: 26px;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .swap-count-control button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .swap-count-value {
+      height: 26px;
+      display: inline-grid;
+      place-items: center;
+      border-inline: 1px solid rgba(133, 183, 163, 0.16);
+      color: #8dffc8;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .swap-action-area {
+      display: grid;
+      gap: 7px;
+      margin-top: 2px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(133, 183, 163, 0.14);
+    }
+
+    .swap-action-area .swap-button-row {
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 640px) {
+      #swapModal.modal-backdrop { padding: 6px; }
+      .swap-card {
+        width: calc(100dvw - 12px);
+        max-height: calc(100dvh - 12px);
+        align-self: stretch;
+        padding: 8px;
+        border-radius: 14px;
+        gap: 6px;
+      }
+      .swap-head {
+        gap: 6px;
+        padding-bottom: 6px;
+      }
+      .swap-head .modal-title { font-size: 14px; }
+      .swap-head .modal-message { font-size: 11px; }
+      .swap-close { width: 28px; height: 28px; font-size: 20px; }
+      .swap-scroll { gap: 6px; padding-right: 0; }
+      .swap-section { gap: 6px; padding: 7px; border-radius: 11px; }
+      .swap-flow-steps { gap: 5px; }
+      .swap-step-pill { min-height: 22px; padding: 3px 7px; font-size: 10px; }
+      .swap-step-pill .num { width: 15px; height: 15px; font-size: 9px; }
+      .swap-qr-panel { grid-template-columns: 1fr; gap: 7px; }
+      .swap-text-details summary { padding: 9px 10px; font-size: 11px; }
+      .swap-text-body { padding: 0 10px 10px; }
+      .swap-receive-actions { gap: 5px; }
+      .swap-scan-panel, .swap-manual-panel { padding: 8px; gap: 7px; }
+      .swap-status { font-size: 10px; }
+      .swap-qr-box { width: 100%; min-height: 0; padding: 8px; }
+      .swap-qr-box img { max-width: min(220px, 100%); }
+      .swap-textarea { min-height: 46px; max-height: 86px; font-size: 9px; }
+      .swap-partner-code { min-height: 72px; font-size: 10px; }
+      .swap-paste-helper { padding: 6px 7px; font-size: 10px; }
+      .swap-button-row { gap: 5px; }
+      .swap-button-row button { flex: 1 1 auto; min-height: 30px; padding: 7px 8px; font-size: 12px; }
+      .swap-chip { min-height: 21px; padding: 3px 6px; font-size: 10px; }
+      .swap-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+      .swap-lists { grid-template-columns: 1fr; gap: 6px; }
+      .swap-total-card { padding: 8px; }
+      .swap-total-number { font-size: 18px; }
+      .swap-total-label-row { gap: 5px; }
+      .swap-info-btn { width: 17px; min-width: 17px; height: 17px; min-height: 17px; font-size: 11px; }
+      .swap-result { gap: 7px; }
+      .swap-action-area { margin-top: 1px; padding-top: 7px; gap: 6px; }
+      .swap-result-empty { padding: 9px; font-size: 11px; }
+      .swap-item-row { gap: 6px; padding: 6px; border-radius: 10px; }
+      .swap-item-name { white-space: normal; font-size: 11px; }
+      .swap-count-control { grid-template-columns: 22px 30px 22px; }
+      .swap-count-control button { width: 22px; height: 24px; }
+      .swap-count-value { height: 24px; }
+    }
+
+    @supports not (height: 100dvh) {
+      .swap-card { width: min(640px, calc(100vw - 20px)); max-height: calc(100vh - 20px); }
+      @media (max-width: 640px) {
+        .swap-card { width: calc(100vw - 12px); max-height: calc(100vh - 12px); }
+      }
+    }
+
+
+    /* Keep confirmation/toast UI above the Swap Center overlay */
+    #confirmModal.modal-backdrop.open {
+      z-index: 240;
+    }
+
+    #toast {
+      z-index: 260;
+    }
+
 </style>
 </head>
 <body>
@@ -2103,6 +2750,10 @@
                     <button id="exportVisibleTxtBtn" type="button" class="settings-action-btn settings-menu-item" title="Save visible list as text" aria-label="Save visible list as text">
                       <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M5 4h14v2H5V4zm0 4h14v2H5V8zm0 4h10v2H5v-2zm0 4h14v2H5v-2z"/></svg></span>
                       <span class="settings-action-copy"><span class="settings-action-title">Save text list</span><span class="settings-action-desc">Export visible stickers as TXT</span></span>
+                    </button>
+                    <button id="swapBtn" type="button" class="settings-action-btn settings-menu-item" title="Open Swap Center" aria-label="Open Swap Center">
+                      <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M7 7h9.2l-2.6-2.6L15 3l5 5-5 5-1.4-1.4L16.2 9H7a3 3 0 0 0-3 3v1H2v-1a5 5 0 0 1 5-5zm10 10H7.8l2.6 2.6L9 21l-5-5 5-5 1.4 1.4L7.8 15H17a3 3 0 0 0 3-3v-1h2v1a5 5 0 0 1-5 5z"/></svg></span>
+                      <span class="settings-action-copy"><span class="settings-action-title">Swap dupes</span><span class="settings-action-desc">Share a code and compare trades</span></span>
                     </button>
                   </div>
 
@@ -2193,6 +2844,86 @@
       <div class="modal-actions">
         <button id="txtExportCancel" class="modal-btn" type="button">Cancel</button>
         <button id="txtExportConfirm" class="modal-btn primary" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="swapModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card swap-card" role="dialog" aria-modal="true" aria-labelledby="swapTitle" aria-describedby="swapMessage">
+      <div class="swap-head">
+        <div>
+          <h2 id="swapTitle" class="modal-title">Swap Center</h2>
+          <p id="swapMessage" class="modal-message">Easy in-person flow: show your QR, scan theirs, then confirm the trade.</p>
+          <div class="swap-flow-steps" aria-hidden="true">
+            <span class="swap-step-pill"><span class="num">1</span>Show</span>
+            <span class="swap-step-pill"><span class="num">2</span>Scan</span>
+            <span class="swap-step-pill"><span class="num">3</span>Confirm</span>
+          </div>
+        </div>
+        <button id="swapCloseBtn" class="swap-close" type="button" aria-label="Close Swap Center">×</button>
+      </div>
+      <div class="swap-scroll">
+        <section class="swap-section">
+          <div class="swap-section-title">1. Show your QR</div>
+          <div id="swapMySummary" class="swap-chip-row"></div>
+          <div class="swap-qr-panel">
+            <div class="swap-qr-box">
+              <img id="swapQrImage" src="" alt="Your sticker swap QR code" referrerpolicy="no-referrer" />
+            </div>
+            <div class="swap-qr-copy">
+              <div class="swap-section-note">Have the other person scan this. Use Share if you want to send it in a message.</div>
+              <div class="swap-button-row">
+                <button id="swapShareBtn" type="button" class="primary">Share</button>
+                <button id="swapCopyBtn" type="button">Copy backup code</button>
+              </div>
+              <details class="swap-text-details">
+                <summary>Backup text code</summary>
+                <div class="swap-text-body">
+                  <div class="swap-inline-note">Only use this if scanning is not convenient.</div>
+                  <textarea id="swapMyCode" class="swap-textarea" readonly spellcheck="false" aria-label="Your swap code"></textarea>
+                  <div class="swap-section-note swap-code-note">This shares what you have and your dupe counts only. Images and personal data are not included.</div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+        <section class="swap-section">
+          <div class="swap-section-title">2. Get their code</div>
+          <div class="swap-receive-actions">
+            <button id="swapScanModeBtn" type="button" class="primary">Scan QR</button>
+            <button id="swapPasteModeBtn" type="button">Paste backup code</button>
+          </div>
+          <div id="swapScanPanel" class="swap-scan-panel">
+            <div id="swapScanStatus" class="swap-status">Open the camera, point it at their QR, and hold steady.</div>
+            <div class="swap-video-shell">
+              <video id="swapScanVideo" playsinline muted></video>
+              <div class="swap-video-guide" aria-hidden="true"></div>
+            </div>
+            <div class="swap-button-row">
+              <button id="swapStartScanBtn" type="button" class="primary">Open camera</button>
+              <button id="swapStopScanBtn" type="button">Stop camera</button>
+            </div>
+            <div class="swap-inline-note">If camera access is blocked or unavailable, use the backup text code instead.</div>
+          </div>
+          <div id="swapManualPanel" class="swap-manual-panel" hidden>
+            <div class="swap-paste-helper">Paste the backup text code here, then tap Compare.</div>
+            <textarea id="swapPartnerCode" class="swap-textarea swap-partner-code" spellcheck="false" placeholder="Paste their backup code" aria-label="Their swap code"></textarea>
+            <div class="swap-button-row swap-code-actions">
+              <button id="swapClearPartnerBtn" type="button">Clear</button>
+              <button id="swapCompareBtn" type="button" class="primary">Compare</button>
+            </div>
+          </div>
+        </section>
+        <section id="swapReviewSection" class="swap-section">
+          <div class="swap-section-title">3. Review and apply</div>
+          <div id="swapResult" class="swap-result"></div>
+          <div class="swap-action-area">
+            <div class="swap-button-row">
+              <button id="swapCopyTradeBtn" type="button">Copy trade summary</button>
+              <button id="swapApplyTradeBtn" type="button" class="primary">Apply swap</button>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -3368,6 +4099,29 @@
     const txtExportPreviewEl = document.getElementById('txtExportPreview');
     const txtExportCancelBtn = document.getElementById('txtExportCancel');
     const txtExportConfirmBtn = document.getElementById('txtExportConfirm');
+    const swapBtn = document.getElementById('swapBtn');
+    const swapModalEl = document.getElementById('swapModal');
+    const swapCloseBtn = document.getElementById('swapCloseBtn');
+    const swapMySummaryEl = document.getElementById('swapMySummary');
+    const swapQrImageEl = document.getElementById('swapQrImage');
+    const swapMyCodeEl = document.getElementById('swapMyCode');
+    const swapCopyBtn = document.getElementById('swapCopyBtn');
+    const swapShareBtn = document.getElementById('swapShareBtn');
+    const swapScanModeBtn = document.getElementById('swapScanModeBtn');
+    const swapPasteModeBtn = document.getElementById('swapPasteModeBtn');
+    const swapScanPanelEl = document.getElementById('swapScanPanel');
+    const swapManualPanelEl = document.getElementById('swapManualPanel');
+    const swapScanStatusEl = document.getElementById('swapScanStatus');
+    const swapScanVideoEl = document.getElementById('swapScanVideo');
+    const swapStartScanBtn = document.getElementById('swapStartScanBtn');
+    const swapStopScanBtn = document.getElementById('swapStopScanBtn');
+    const swapPartnerCodeEl = document.getElementById('swapPartnerCode');
+    const swapClearPartnerBtn = document.getElementById('swapClearPartnerBtn');
+    const swapCompareBtn = document.getElementById('swapCompareBtn');
+    const swapReviewSectionEl = document.getElementById('swapReviewSection');
+    const swapResultEl = document.getElementById('swapResult');
+    const swapCopyTradeBtn = document.getElementById('swapCopyTradeBtn');
+    const swapApplyTradeBtn = document.getElementById('swapApplyTradeBtn');
     const imageModalEl = document.getElementById('imageModal');
     const imageModalTitleEl = document.getElementById('imageModalTitle');
     const imageModalMetaEl = document.getElementById('imageModalMeta');
@@ -3395,6 +4149,13 @@
     let filtersCollapsed = savedFiltersCollapsed === null ? true : savedFiltersCollapsed === '1';
     let modalResolve = null;
     let txtExportResolve = null;
+    let swapDraft = null;
+    let swapInfoTooltipEl = null;
+    let swapReceiveMode = 'scan';
+    let swapQrDetector = null;
+    let swapQrStream = null;
+    let swapQrScanFrame = 0;
+    let swapScannerActive = false;
     let toastTimer = null;
     let currentVisibleItems = [];
     let currentVisibleListItems = [];
@@ -3412,6 +4173,34 @@
     let localImageUrls = [];
     let imageViewerScrollY = 0;
     let imageViewerScrollLocked = false;
+    let modalScrollY = 0;
+    let modalScrollLocked = false;
+
+    function lockModalPageScroll() {
+      if (modalScrollLocked) return;
+      modalScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${modalScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      modalScrollLocked = true;
+    }
+
+    function unlockModalPageScroll() {
+      if (!modalScrollLocked) return;
+      const restoreY = modalScrollY;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      modalScrollY = 0;
+      modalScrollLocked = false;
+      window.scrollTo(0, restoreY);
+    }
 
     function lockImageViewerScroll() {
       if (imageViewerScrollLocked) return;
@@ -4462,7 +5251,7 @@
 
     if (settingsMenuPanel) {
       settingsMenuPanel.addEventListener('click', event => {
-        const action = event.target.closest('#exportBtn, #exportVisibleTxtBtn, label[for="importFile"], #loadImgFolderBtn, #resetBtn');
+        const action = event.target.closest('#exportBtn, #exportVisibleTxtBtn, #swapBtn, label[for="importFile"], #loadImgFolderBtn, #resetBtn');
         if (action) closeSettingsMenuSoon();
       });
     }
@@ -5591,6 +6380,660 @@
       reader.readAsText(file);
     }
 
+    function buildSwapItemCatalog() {
+      const items = getAllItems({ includeRemoved: false }).filter(item => !item.header && !item.removed);
+      const codeCounts = new Map();
+      items.forEach(item => {
+        const code = extractItemCode(item.text);
+        if (code) codeCounts.set(code, (codeCounts.get(code) || 0) + 1);
+      });
+
+      const rows = items.map(item => {
+        const code = extractItemCode(item.text);
+        const id = code && codeCounts.get(code) === 1 ? 'c:' + code : 'k:' + item.key;
+        return {
+          id,
+          key: item.key,
+          text: item.text,
+          code,
+          name: extractStickerNameOnly(item.text),
+          country: extractCountry(item.text)
+        };
+      });
+
+      return {
+        rows,
+        byId: new Map(rows.map(row => [row.id, row])),
+        byKey: new Map(rows.map(row => [row.key, row]))
+      };
+    }
+
+    function bytesToBase64Url(bytes) {
+      let binary = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+      }
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    }
+
+    function base64UrlToBytes(value) {
+      let base64 = String(value || '').replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) base64 += '=';
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+      return bytes;
+    }
+
+    function encodeSwapText(text) {
+      return bytesToBase64Url(new TextEncoder().encode(text));
+    }
+
+    function decodeSwapText(value) {
+      return new TextDecoder().decode(base64UrlToBytes(value));
+    }
+
+    function encodeHaveBitset(catalog) {
+      const bytes = new Uint8Array(Math.ceil(catalog.rows.length / 8));
+      catalog.rows.forEach((row, index) => {
+        if (!isChecked(row.key)) return;
+        bytes[index >> 3] |= 1 << (index & 7);
+      });
+      return bytesToBase64Url(bytes);
+    }
+
+    function decodeHaveBitset(encoded, count) {
+      const bytes = base64UrlToBytes(encoded);
+      const haveIndexes = [];
+      for (let index = 0; index < count; index += 1) {
+        if (bytes[index >> 3] & (1 << (index & 7))) haveIndexes.push(index);
+      }
+      return haveIndexes;
+    }
+
+    function encodeCompactDupes(catalog) {
+      const tokens = [];
+      catalog.rows.forEach((row, index) => {
+        const count = getDupeCount(row.key);
+        if (count > 0) tokens.push(`${index.toString(36)}-${count.toString(36)}`);
+      });
+      return tokens.length ? tokens.join('.') : '_';
+    }
+
+    function decodeCompactDupes(encoded) {
+      const result = {};
+      const text = String(encoded || '').trim();
+      if (!text || text === '_') return result;
+      text.split('.').forEach(token => {
+        const [indexPart, countPart] = token.split('-');
+        const index = Number.parseInt(indexPart, 36);
+        const count = cleanDupeCount(Number.parseInt(countPart || '0', 36));
+        if (Number.isInteger(index) && index >= 0 && count > 0) result[index] = count;
+      });
+      return result;
+    }
+
+    function createSwapPayload() {
+      const catalog = buildSwapItemCatalog();
+      return {
+        type: 'panini-swap-compact',
+        v: 2,
+        h: encodeHaveBitset(catalog),
+        d: encodeCompactDupes(catalog)
+      };
+    }
+
+    function createSwapCode() {
+      const payload = createSwapPayload();
+      return `STSWAP2.${payload.h}.${payload.d}`;
+    }
+
+    function decodeSwapCode(raw) {
+      const text = String(raw || '').trim();
+      if (!text) throw new Error('empty');
+
+      if (text.startsWith('{')) return JSON.parse(text);
+
+      const compactV2 = text.match(/STSWAP2\.([A-Za-z0-9_-]+)\.([A-Za-z0-9._-]+)/i);
+      if (compactV2) {
+        return {
+          type: 'panini-swap-compact',
+          v: 2,
+          h: compactV2[1],
+          d: compactV2[2]
+        };
+      }
+
+      const match = text.match(/STSWAP1\.([A-Za-z0-9_-]+)/);
+      const compact = match ? match[1] : text.replace(/\s+/g, '').replace(/^STSWAP1\./, '');
+      return JSON.parse(decodeSwapText(compact));
+    }
+
+    function normalizeSwapPayload(data) {
+      if (!data || typeof data !== 'object') throw new Error('bad-payload');
+      const catalog = buildSwapItemCatalog();
+      const have = new Set();
+      const dupes = {};
+
+      if (data.type === 'panini-swap-compact' || data.v === 2) {
+        decodeHaveBitset(data.h || '', catalog.rows.length).forEach(index => {
+          const row = catalog.rows[index];
+          if (row) have.add(row.id);
+        });
+        Object.entries(decodeCompactDupes(data.d || '_')).forEach(([indexText, value]) => {
+          const row = catalog.rows[Number.parseInt(indexText, 10)];
+          const count = cleanDupeCount(value);
+          if (row && count > 0) {
+            dupes[row.id] = count;
+            have.add(row.id);
+          }
+        });
+        return { have, dupes };
+      }
+
+      if (data.type === 'panini-swap') {
+        (Array.isArray(data.have) ? data.have : []).forEach(id => {
+          if (catalog.byId.has(String(id))) have.add(String(id));
+        });
+        if (data.dupes && typeof data.dupes === 'object') {
+          Object.entries(data.dupes).forEach(([id, value]) => {
+            const cleanId = String(id);
+            const count = cleanDupeCount(value);
+            if (catalog.byId.has(cleanId) && count > 0) {
+              dupes[cleanId] = count;
+              have.add(cleanId);
+            }
+          });
+        }
+        return { have, dupes };
+      }
+
+      if (data.app === 'Sticker Checklist Tracker') {
+        (Array.isArray(data.checked) ? data.checked : []).forEach(text => {
+          const key = ITEM_KEY_MIGRATIONS[itemKey(String(text))] || itemKey(String(text));
+          const row = catalog.byKey.get(key);
+          if (row) have.add(row.id);
+        });
+
+        if (data.dupes && typeof data.dupes === 'object') {
+          Object.entries(data.dupes).forEach(([rawKey, value]) => {
+            const keyRaw = itemKey(String(rawKey));
+            const key = ITEM_KEY_MIGRATIONS[keyRaw] || keyRaw;
+            const row = catalog.byKey.get(key);
+            const count = cleanDupeCount(value);
+            if (row && count > 0) {
+              dupes[row.id] = count;
+              have.add(row.id);
+            }
+          });
+        }
+
+        if (Array.isArray(data.duplicates)) {
+          data.duplicates.forEach(entry => {
+            const rawText = typeof entry === 'string' ? entry : entry && (entry.item || entry.text || entry.name);
+            const countValue = typeof entry === 'string' ? 1 : entry && entry.count;
+            const key = ITEM_KEY_MIGRATIONS[itemKey(String(rawText || ''))] || itemKey(String(rawText || ''));
+            const row = catalog.byKey.get(key);
+            const count = cleanDupeCount(countValue);
+            if (row && count > 0) {
+              dupes[row.id] = count;
+              have.add(row.id);
+            }
+          });
+        }
+
+        return { have, dupes };
+      }
+
+      throw new Error('bad-payload');
+    }
+
+    function buildSwapDraft(partnerPayload) {
+      const catalog = buildSwapItemCatalog();
+      const give = [];
+      const get = [];
+      catalog.rows.forEach(row => {
+        const myDupeCount = getDupeCount(row.key);
+        const partnerHas = partnerPayload.have.has(row.id);
+        if (myDupeCount > 0 && !partnerHas) {
+          give.push({ ...row, max: myDupeCount, count: myDupeCount });
+        }
+
+        const partnerDupeCount = cleanDupeCount(partnerPayload.dupes[row.id]);
+        if (partnerDupeCount > 0 && !isChecked(row.key)) {
+          get.push({ ...row, max: partnerDupeCount, count: partnerDupeCount });
+        }
+      });
+      return { give, get };
+    }
+
+    function selectedSwapTotal(type) {
+      const list = swapDraft && swapDraft[type] ? swapDraft[type] : [];
+      return list.reduce((sum, item) => sum + cleanDupeCount(item.count), 0);
+    }
+
+    function swapItemLabel(item) {
+      const code = item.code || '';
+      const name = item.name || item.text;
+      return [code, name].filter(Boolean).join(' ');
+    }
+
+    function ensureSwapInfoTooltip() {
+      if (swapInfoTooltipEl) return swapInfoTooltipEl;
+      swapInfoTooltipEl = document.createElement('div');
+      swapInfoTooltipEl.className = 'swap-info-tooltip';
+      swapInfoTooltipEl.id = 'swapInfoTooltip';
+      swapInfoTooltipEl.setAttribute('role', 'tooltip');
+      swapInfoTooltipEl.setAttribute('aria-hidden', 'true');
+      swapInfoTooltipEl.innerHTML = '<div class="swap-info-tooltip-title">Uneven swap</div><div>Give and get counts do not match. That is allowed, but adjust the quantities before applying if you want an even swap.</div>';
+      document.body.appendChild(swapInfoTooltipEl);
+      return swapInfoTooltipEl;
+    }
+
+    function hideSwapInfoTooltip() {
+      if (!swapInfoTooltipEl) return;
+      swapInfoTooltipEl.classList.remove('open');
+      swapInfoTooltipEl.setAttribute('aria-hidden', 'true');
+      document.querySelectorAll('[data-swap-info="uneven"][aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    }
+
+    function showSwapInfoTooltip(anchor) {
+      if (!anchor) return;
+      const tooltip = ensureSwapInfoTooltip();
+      const isOpenForAnchor = tooltip.classList.contains('open') && tooltip.dataset.anchorId === anchor.dataset.tooltipId;
+      if (isOpenForAnchor) {
+        hideSwapInfoTooltip();
+        return;
+      }
+
+      document.querySelectorAll('[data-swap-info="uneven"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+      if (!anchor.dataset.tooltipId) anchor.dataset.tooltipId = String(Date.now()) + Math.random().toString(36).slice(2);
+      tooltip.dataset.anchorId = anchor.dataset.tooltipId;
+      tooltip.classList.add('open');
+      tooltip.setAttribute('aria-hidden', 'false');
+      anchor.setAttribute('aria-expanded', 'true');
+      anchor.setAttribute('aria-describedby', tooltip.id);
+
+      tooltip.style.visibility = 'hidden';
+      tooltip.style.left = '0px';
+      tooltip.style.top = '0px';
+      const rect = anchor.getBoundingClientRect();
+      const tipRect = tooltip.getBoundingClientRect();
+      const margin = 10;
+      let left = rect.left + (rect.width / 2) - (tipRect.width / 2);
+      left = Math.max(margin, Math.min(left, window.innerWidth - tipRect.width - margin));
+      let top = rect.bottom + 8;
+      if (top + tipRect.height > window.innerHeight - margin) {
+        top = rect.top - tipRect.height - 8;
+      }
+      top = Math.max(margin, Math.min(top, window.innerHeight - tipRect.height - margin));
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+      tooltip.style.visibility = '';
+    }
+
+    function renderSwapList(type, title, emptyText) {
+      const list = swapDraft && swapDraft[type] ? swapDraft[type] : [];
+      const visible = list.filter(item => item.max > 0);
+      if (!visible.length) {
+        return `<div class="swap-list"><div class="swap-list-title">${escapeHtml(title)}</div><div class="swap-result-empty">${escapeHtml(emptyText)}</div></div>`;
+      }
+
+      return `<div class="swap-list"><div class="swap-list-title">${escapeHtml(title)}</div>${visible.map((item, index) => {
+        const count = cleanDupeCount(item.count);
+        const meta = [item.country, 'Max ' + item.max].filter(Boolean).join(' · ');
+        return `<div class="swap-item-row">
+          <div class="swap-item-copy">
+            <div class="swap-item-name" title="${escapeHtml(item.text)}">${escapeHtml(swapItemLabel(item))}</div>
+            <div class="swap-item-meta">${escapeHtml(meta)}</div>
+          </div>
+          <div class="swap-count-control" aria-label="Swap count">
+            <button type="button" data-swap-action="dec" data-swap-type="${type}" data-swap-index="${index}" ${count <= 0 ? 'disabled' : ''}>−</button>
+            <span class="swap-count-value">${count}</span>
+            <button type="button" data-swap-action="inc" data-swap-type="${type}" data-swap-index="${index}" ${count >= item.max ? 'disabled' : ''}>+</button>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    }
+
+    function renderSwapResults() {
+      hideSwapInfoTooltip();
+      if (!swapResultEl) return;
+      if (!swapDraft) {
+        swapResultEl.innerHTML = '<div class="swap-result-empty">Paste someone else\'s swap code and compare to see what each of you can trade.</div>';
+        if (swapCopyTradeBtn) swapCopyTradeBtn.disabled = true;
+        if (swapApplyTradeBtn) swapApplyTradeBtn.disabled = true;
+        return;
+      }
+
+      const giveTotal = selectedSwapTotal('give');
+      const getTotal = selectedSwapTotal('get');
+      const hasTrade = giveTotal > 0 || getTotal > 0;
+      const isUnevenSwap = hasTrade && giveTotal !== getTotal;
+      const unevenInfoButton = isUnevenSwap
+        ? '<button type="button" class="swap-info-btn" data-swap-info="uneven" aria-label="Why this swap is uneven" aria-expanded="false">i</button>'
+        : '';
+
+      swapResultEl.innerHTML = `
+        <div class="swap-totals">
+          <div class="swap-total-card${isUnevenSwap ? ' warning' : ''}"><div class="swap-total-number">${giveTotal}</div><div class="swap-total-label-row"><div class="swap-total-label">You give</div></div></div>
+          <div class="swap-total-card${isUnevenSwap ? ' warning' : ''}"><div class="swap-total-number">${getTotal}</div><div class="swap-total-label-row"><div class="swap-total-label">You get</div>${unevenInfoButton}</div></div>
+        </div>
+        <div class="swap-lists">
+          ${renderSwapList('give', 'You can give them', 'They already have everything you have duplicated.')}
+          ${renderSwapList('get', 'They can give you', 'You already have everything they duplicated.')}
+        </div>`;
+
+      if (swapCopyTradeBtn) swapCopyTradeBtn.disabled = !hasTrade;
+      if (swapApplyTradeBtn) swapApplyTradeBtn.disabled = !hasTrade;
+    }
+
+
+    function canScanSwapQr() {
+      return !!(window.BarcodeDetector && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function');
+    }
+
+    function setSwapScanStatus(message, tone = '') {
+      if (!swapScanStatusEl) return;
+      swapScanStatusEl.textContent = message || '';
+      swapScanStatusEl.className = 'swap-status' + (tone ? ` ${tone}` : '');
+    }
+
+    function setSwapReceiveMode(mode) {
+      swapReceiveMode = mode === 'paste' ? 'paste' : 'scan';
+      if (swapScanModeBtn) {
+        swapScanModeBtn.classList.toggle('primary', swapReceiveMode === 'scan');
+        swapScanModeBtn.setAttribute('aria-pressed', swapReceiveMode === 'scan' ? 'true' : 'false');
+      }
+      if (swapPasteModeBtn) {
+        swapPasteModeBtn.classList.toggle('primary', swapReceiveMode === 'paste');
+        swapPasteModeBtn.setAttribute('aria-pressed', swapReceiveMode === 'paste' ? 'true' : 'false');
+      }
+      if (swapScanPanelEl) swapScanPanelEl.hidden = swapReceiveMode !== 'scan';
+      if (swapManualPanelEl) swapManualPanelEl.hidden = swapReceiveMode !== 'paste';
+      if (swapReceiveMode !== 'scan') stopSwapQrScanner({ silent: true });
+      if (swapReceiveMode === 'scan' && !canScanSwapQr()) {
+        setSwapScanStatus('This browser cannot scan QR codes here. Use the backup text code instead.', 'warn');
+      }
+    }
+
+    function scrollSwapReviewIntoView() {
+      if (!swapReviewSectionEl) return;
+      requestAnimationFrame(() => {
+        swapReviewSectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    function stopSwapQrScanner(options = {}) {
+      const silent = !!options.silent;
+      swapScannerActive = false;
+      if (swapQrScanFrame) {
+        cancelAnimationFrame(swapQrScanFrame);
+        swapQrScanFrame = 0;
+      }
+      if (swapQrStream) {
+        swapQrStream.getTracks().forEach(track => track.stop());
+        swapQrStream = null;
+      }
+      if (swapScanVideoEl) {
+        try { swapScanVideoEl.pause(); } catch (error) {}
+        swapScanVideoEl.srcObject = null;
+      }
+      if (!silent && swapReceiveMode === 'scan') {
+        setSwapScanStatus(canScanSwapQr() ? 'Camera stopped.' : 'Use the backup text code instead.', canScanSwapQr() ? '' : 'warn');
+      }
+    }
+
+    async function processScannedSwapCode(rawValue) {
+      if (!rawValue || !swapPartnerCodeEl) return false;
+      swapPartnerCodeEl.value = String(rawValue).trim();
+      const ok = comparePartnerSwapCode({ showMessages: false });
+      if (ok) {
+        setSwapScanStatus('QR captured. Trade options are ready below.', 'success');
+        stopSwapQrScanner({ silent: true });
+        scrollSwapReviewIntoView();
+        return true;
+      }
+      setSwapScanStatus('That QR code is not a valid swap code.', 'error');
+      return false;
+    }
+
+    async function detectSwapQrFrame() {
+      if (!swapScannerActive || !swapQrDetector || !swapScanVideoEl) return;
+      try {
+        const barcodes = await swapQrDetector.detect(swapScanVideoEl);
+        const match = Array.isArray(barcodes) ? barcodes.find(code => code && typeof code.rawValue === 'string' && code.rawValue.trim()) : null;
+        if (match && await processScannedSwapCode(match.rawValue)) {
+          return;
+        }
+      } catch (error) {
+        setSwapScanStatus('Unable to scan right now. Try again or use the backup text code.', 'error');
+      }
+      if (swapScannerActive) {
+        swapQrScanFrame = requestAnimationFrame(detectSwapQrFrame);
+      }
+    }
+
+    async function startSwapQrScanner() {
+      if (!canScanSwapQr()) {
+        setSwapReceiveMode('paste');
+        showToast('QR scanning is not supported here. Use the backup code.');
+        return;
+      }
+      setSwapReceiveMode('scan');
+      stopSwapQrScanner({ silent: true });
+      try {
+        swapQrDetector = swapQrDetector || new BarcodeDetector({ formats: ['qr_code'] });
+        swapQrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+        if (swapScanVideoEl) {
+          swapScanVideoEl.srcObject = swapQrStream;
+          await swapScanVideoEl.play();
+        }
+        swapScannerActive = true;
+        setSwapScanStatus('Camera is on. Hold their QR inside the guide box.', 'success');
+        swapQrScanFrame = requestAnimationFrame(detectSwapQrFrame);
+      } catch (error) {
+        stopSwapQrScanner({ silent: true });
+        setSwapScanStatus('Camera access was blocked. Use the backup text code instead.', 'warn');
+        setSwapReceiveMode('paste');
+      }
+    }
+
+    function updateSwapMySummary() {
+      if (!swapMySummaryEl) return;
+      const allItems = getAllItems({ includeRemoved: false }).filter(item => !item.header && !item.removed);
+      const haveCount = allItems.filter(item => isChecked(item.key)).length;
+      const needCount = allItems.length - haveCount;
+      const dupeTotal = allItems.reduce((sum, item) => sum + getDupeCount(item.key), 0);
+      swapMySummaryEl.innerHTML = `
+        <span class="swap-chip">Have ${haveCount}</span>
+        <span class="swap-chip">Need ${needCount}</span>
+        <span class="swap-chip">Dupes ${dupeTotal}</span>`;
+    }
+
+    function updateSwapQr() {
+      if (!swapQrImageEl) return;
+      const code = swapMyCodeEl ? swapMyCodeEl.value.trim() : createSwapCode();
+      if (!code) {
+        swapQrImageEl.removeAttribute('src');
+        return;
+      }
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(code)}`;
+      swapQrImageEl.src = qrUrl;
+    }
+
+    function openSwapCenter() {
+      if (!swapModalEl) return;
+      swapDraft = null;
+      if (swapMyCodeEl) swapMyCodeEl.value = createSwapCode();
+      updateSwapQr();
+      if (swapPartnerCodeEl) swapPartnerCodeEl.value = '';
+      updateSwapMySummary();
+      renderSwapResults();
+      setSwapReceiveMode(canScanSwapQr() ? 'scan' : 'paste');
+      setSwapScanStatus(canScanSwapQr() ? 'Open the camera, point it at their QR, and hold steady.' : 'This browser cannot scan QR codes here. Use the backup text code instead.', canScanSwapQr() ? '' : 'warn');
+      lockModalPageScroll();
+      swapModalEl.classList.add('open');
+      swapModalEl.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => {
+        const swapScrollEl = swapModalEl.querySelector('.swap-scroll');
+        if (swapScrollEl) swapScrollEl.scrollTop = 0;
+      });
+    }
+
+    function closeSwapCenter() {
+      if (!swapModalEl) return;
+      hideSwapInfoTooltip();
+      stopSwapQrScanner({ silent: true });
+      swapModalEl.classList.remove('open');
+      swapModalEl.setAttribute('aria-hidden', 'true');
+      unlockModalPageScroll();
+    }
+
+    async function copyTextToClipboard(text, successMessage) {
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (error) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'fixed';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+      }
+      showToast(successMessage || 'Copied.');
+    }
+
+    async function shareSwapCode() {
+      const code = swapMyCodeEl ? swapMyCodeEl.value : createSwapCode();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'Sticker swap code', text: code });
+          return;
+        } catch (error) {
+          if (error && error.name === 'AbortError') return;
+        }
+      }
+      await copyTextToClipboard(code, 'Swap code copied.');
+    }
+
+    function clearPartnerSwapCode() {
+      if (!swapPartnerCodeEl) return;
+      swapPartnerCodeEl.value = '';
+      swapDraft = null;
+      renderSwapResults();
+      swapPartnerCodeEl.focus();
+    }
+
+    function comparePartnerSwapCode(options = {}) {
+      const showMessages = options.showMessages !== false;
+      const rawCode = swapPartnerCodeEl ? swapPartnerCodeEl.value.trim() : '';
+      if (!rawCode) {
+        swapDraft = null;
+        renderSwapResults();
+        if (showMessages) showToast('Paste their swap code first.');
+        return false;
+      }
+
+      try {
+        const data = decodeSwapCode(rawCode);
+        const partnerPayload = normalizeSwapPayload(data);
+        swapDraft = buildSwapDraft(partnerPayload);
+        renderSwapResults();
+        const total = selectedSwapTotal('give') + selectedSwapTotal('get');
+        if (showMessages) showToast(total ? 'Swap options ready.' : 'No matching swaps found.');
+        scrollSwapReviewIntoView();
+        return true;
+      } catch (error) {
+        swapDraft = null;
+        renderSwapResults();
+        if (showMessages) showToast('Invalid swap code.');
+        return false;
+      }
+    }
+
+    function maybeAutoComparePartnerCode() {
+      if (!swapPartnerCodeEl) return;
+      const value = swapPartnerCodeEl.value.trim();
+      if (!value) {
+        swapDraft = null;
+        renderSwapResults();
+        return;
+      }
+      if (value.includes('STSWAP2.') || value.includes('STSWAP1.') || value.startsWith('{')) {
+        comparePartnerSwapCode({ showMessages: false });
+      }
+    }
+
+    function adjustSwapDraftCount(type, index, delta) {
+      if (!swapDraft || !swapDraft[type] || !swapDraft[type][index]) return;
+      const item = swapDraft[type][index];
+      item.count = Math.max(0, Math.min(item.max, cleanDupeCount(item.count) + delta));
+      renderSwapResults();
+    }
+
+    function tradeSummaryText() {
+      if (!swapDraft) return '';
+      const lines = ['Sticker swap summary'];
+      const addSection = (label, items) => {
+        const selected = items.filter(item => cleanDupeCount(item.count) > 0);
+        lines.push('', label + ':');
+        if (!selected.length) {
+          lines.push('- None');
+          return;
+        }
+        selected.forEach(item => lines.push(`- ${swapItemLabel(item)} x${cleanDupeCount(item.count)}`));
+      };
+      addSection('I give', swapDraft.give || []);
+      addSection('I get', swapDraft.get || []);
+      return lines.join('\n');
+    }
+
+    async function applySelectedSwap() {
+      if (!swapDraft) return;
+      const giveTotal = selectedSwapTotal('give');
+      const getTotal = selectedSwapTotal('get');
+      if (!giveTotal && !getTotal) return;
+
+      const isUnevenSwap = giveTotal !== getTotal;
+      const ok = await confirmAction({
+        title: isUnevenSwap ? 'Uneven swap' : 'Apply this swap?',
+        message: isUnevenSwap
+          ? `Give and get counts do not match. That is allowed, but adjust the quantities before applying if you want an even swap.
+
+You give ${giveTotal}. You get ${getTotal}.`
+          : `This will subtract ${giveTotal} from your duplicate counts and mark ${getTotal} received stickers as owned.`,
+        confirmText: isUnevenSwap ? 'Apply anyway' : 'Apply',
+        cancelText: isUnevenSwap ? 'Adjust quantities' : 'Cancel'
+      });
+      if (!ok) return;
+
+      if (!state.dupes || typeof state.dupes !== 'object') state.dupes = {};
+      (swapDraft.give || []).forEach(item => {
+        const count = cleanDupeCount(item.count);
+        if (count <= 0) return;
+        const nextCount = Math.max(0, getDupeCount(item.key) - count);
+        if (nextCount > 0) state.dupes[item.key] = nextCount;
+        else delete state.dupes[item.key];
+        state.checked[item.key] = true;
+      });
+
+      (swapDraft.get || []).forEach(item => {
+        const count = cleanDupeCount(item.count);
+        if (count <= 0) return;
+        state.checked[item.key] = true;
+      });
+
+      saveState();
+      render();
+      closeSwapCenter();
+      showToast('Swap applied.');
+    }
+
     async function resetAll() {
       const ok = await confirmAction({
         title: 'Reset tracker?',
@@ -5621,6 +7064,60 @@
         if (event.target === txtExportModalEl) closeTxtExportModal(null);
       });
     }
+
+    if (swapModalEl) {
+      swapModalEl.addEventListener('click', event => {
+        if (event.target === swapModalEl) closeSwapCenter();
+      });
+    }
+    if (swapCloseBtn) swapCloseBtn.addEventListener('click', closeSwapCenter);
+    if (swapCopyBtn) swapCopyBtn.addEventListener('click', () => copyTextToClipboard(swapMyCodeEl ? swapMyCodeEl.value : createSwapCode(), 'Backup code copied.'));
+    if (swapShareBtn) swapShareBtn.addEventListener('click', shareSwapCode);
+    if (swapScanModeBtn) swapScanModeBtn.addEventListener('click', () => setSwapReceiveMode('scan'));
+    if (swapPasteModeBtn) swapPasteModeBtn.addEventListener('click', () => setSwapReceiveMode('paste'));
+    if (swapStartScanBtn) swapStartScanBtn.addEventListener('click', startSwapQrScanner);
+    if (swapStopScanBtn) swapStopScanBtn.addEventListener('click', () => stopSwapQrScanner());
+    if (swapClearPartnerBtn) swapClearPartnerBtn.addEventListener('click', clearPartnerSwapCode);
+    if (swapCompareBtn) swapCompareBtn.addEventListener('click', () => comparePartnerSwapCode());
+    if (swapPartnerCodeEl) {
+      swapPartnerCodeEl.addEventListener('focus', () => setSwapReceiveMode('paste'));
+      swapPartnerCodeEl.addEventListener('paste', () => setTimeout(maybeAutoComparePartnerCode, 40));
+      swapPartnerCodeEl.addEventListener('input', () => {
+        if (!swapPartnerCodeEl.value.trim()) {
+          swapDraft = null;
+          renderSwapResults();
+        }
+      });
+    }
+    if (swapCopyTradeBtn) swapCopyTradeBtn.addEventListener('click', () => copyTextToClipboard(tradeSummaryText(), 'Trade summary copied.'));
+    if (swapApplyTradeBtn) swapApplyTradeBtn.addEventListener('click', applySelectedSwap);
+    if (swapResultEl) {
+      swapResultEl.addEventListener('click', event => {
+        const infoBtn = event.target.closest('[data-swap-info="uneven"]');
+        if (infoBtn) {
+          event.preventDefault();
+          event.stopPropagation();
+          showSwapInfoTooltip(infoBtn);
+          return;
+        }
+        const btn = event.target.closest('[data-swap-action]');
+        if (!btn) return;
+        const delta = btn.dataset.swapAction === 'inc' ? 1 : -1;
+        adjustSwapDraftCount(btn.dataset.swapType, Number.parseInt(btn.dataset.swapIndex, 10), delta);
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!swapInfoTooltipEl || !swapInfoTooltipEl.classList.contains('open')) return;
+      if (event.target.closest('[data-swap-info="uneven"]') || event.target.closest('.swap-info-tooltip')) return;
+      hideSwapInfoTooltip();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideSwapInfoTooltip();
+    });
+
+    window.addEventListener('resize', hideSwapInfoTooltip);
 
     state.countryFilter = 'all';
     if (countryFilter) countryFilter.value = 'all';
@@ -5772,6 +7269,10 @@
     exportVisibleTxtBtn.addEventListener('click', () => {
       closeSettingsMenuSoon();
       exportVisibleListTxt();
+    });
+    swapBtn.addEventListener('click', () => {
+      closeSettingsMenuSoon();
+      openSwapCenter();
     });
     importFile.addEventListener('change', event => {
       closeSettingsMenuSoon();
