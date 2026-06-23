@@ -7681,6 +7681,7 @@
 
     function encodeHaveBitset(catalog) {
       const bytes = new Uint8Array(Math.ceil(catalog.rows.length / 8));
+      if (!bytes.length) return '_';
       catalog.rows.forEach((row, index) => {
         if (!isTradeableSwapKey(row.key) || !isChecked(row.key)) return;
         bytes[index >> 3] |= 1 << (index & 7);
@@ -7689,6 +7690,7 @@
     }
 
     function decodeHaveBitset(encoded, count) {
+      if (!encoded || encoded === '_' || !count) return [];
       const bytes = base64UrlToBytes(encoded);
       const haveIndexes = [];
       for (let index = 0; index < count; index += 1) {
@@ -7736,10 +7738,37 @@
       return `STSWAP3.${payload.c}.${payload.h}.${payload.d}`;
     }
 
-    function decodeSwapCode(raw) {
+    function compactSwapCodeText(value) {
+      return String(value || '').replace(/[\s\u200B-\u200D\uFEFF]/g, '');
+    }
+
+    function extractSwapCodeText(raw) {
       const text = String(raw || '').trim();
+      if (!text) return '';
+      const candidates = [text];
+
+      try {
+        const url = new URL(text);
+        ['swap', 'code', 's'].forEach(name => {
+          const value = url.searchParams.get(name);
+          if (value) candidates.push(value);
+        });
+        if (url.hash) candidates.push(decodeURIComponent(url.hash.replace(/^#/, '')));
+      } catch (error) {}
+
+      for (const candidate of candidates) {
+        const clean = compactSwapCodeText(candidate);
+        const match = clean.match(/STSWAP3\.[A-Za-z0-9]+\.[A-Za-z0-9_-]*\.[A-Za-z0-9._-]+/i);
+        if (match) return match[0];
+      }
+
+      return compactSwapCodeText(text);
+    }
+
+    function decodeSwapCode(raw) {
+      const text = extractSwapCodeText(raw);
       if (!text) throw new Error('empty');
-      const compactV3 = text.match(/^STSWAP3\.([A-Za-z0-9]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9._-]+)$/i);
+      const compactV3 = text.match(/^STSWAP3\.([A-Za-z0-9]+)\.([A-Za-z0-9_-]*)\.([A-Za-z0-9._-]+)$/i);
       if (!compactV3) throw new Error('bad-swap-code');
       return {
         type: 'panini-swap-compact',
@@ -8011,7 +8040,8 @@
 
     async function processScannedSwapCode(rawValue) {
       if (!rawValue || !swapPartnerCodeEl) return false;
-      swapPartnerCodeEl.value = String(rawValue).trim();
+      const code = extractSwapCodeText(rawValue);
+      swapPartnerCodeEl.value = code || String(rawValue).trim();
       const ok = comparePartnerSwapCode({ showMessages: false });
       if (ok) {
         setSwapScanStatus('QR captured.', 'success');
@@ -8019,7 +8049,15 @@
         scrollSwapReviewIntoView();
         return true;
       }
-      setSwapScanStatus('That QR code is not a valid swap code.', 'error');
+
+      const reason = comparePartnerSwapCode.lastError || '';
+      if (reason === 'catalog-mismatch') {
+        setSwapScanStatus('Different checklist. Browse the same checklist, then scan again.', 'warn');
+      } else if (reason === 'empty') {
+        setSwapScanStatus('QR has no readable swap code.', 'error');
+      } else {
+        setSwapScanStatus('That QR is not a Kollekt swap code.', 'error');
+      }
       return false;
     }
 
@@ -8099,11 +8137,22 @@
 
     function updateSwapQr() {
       if (!swapQrImageEl) return;
-      const code = swapMyCodeEl ? swapMyCodeEl.value.trim() : createSwapCode();
+      const code = swapMyCodeEl ? extractSwapCodeText(swapMyCodeEl.value) : createSwapCode();
       const box = swapQrImageEl.closest('.swap-qr-box');
       if (!code) {
         setSwapQrLoading(false);
         swapQrImageEl.removeAttribute('src');
+        return;
+      }
+
+      try {
+        decodeSwapCode(code);
+        if (swapMyCodeEl && swapMyCodeEl.value !== code) swapMyCodeEl.value = code;
+      } catch (error) {
+        setSwapQrLoading(false);
+        if (box) box.classList.add('qr-error');
+        swapQrImageEl.removeAttribute('src');
+        showToast('Swap code is not ready yet. Browse checklist first.');
         return;
       }
 
@@ -8176,7 +8225,8 @@
     }
 
     async function shareSwapCode() {
-      const code = swapMyCodeEl ? swapMyCodeEl.value : createSwapCode();
+      const code = swapMyCodeEl ? extractSwapCodeText(swapMyCodeEl.value) : createSwapCode();
+      if (!code) return;
       if (navigator.share) {
         try {
           await navigator.share({ title: 'Sticker swap code', text: code });
@@ -8197,9 +8247,12 @@
     }
 
     function comparePartnerSwapCode(options = {}) {
+      comparePartnerSwapCode.lastError = '';
       const showMessages = options.showMessages !== false;
-      const rawCode = swapPartnerCodeEl ? swapPartnerCodeEl.value.trim() : '';
+      const rawInput = swapPartnerCodeEl ? swapPartnerCodeEl.value.trim() : '';
+      const rawCode = extractSwapCodeText(rawInput);
       if (!rawCode) {
+        comparePartnerSwapCode.lastError = 'empty';
         swapDraft = null;
         renderSwapResults();
         if (showMessages) showToast('Paste their code first.');
@@ -8209,6 +8262,7 @@
       try {
         const data = decodeSwapCode(rawCode);
         const partnerPayload = normalizeSwapPayload(data);
+        if (swapPartnerCodeEl && swapPartnerCodeEl.value !== rawCode) swapPartnerCodeEl.value = rawCode;
         swapDraft = buildSwapDraft(partnerPayload);
         renderSwapResults();
         const total = selectedSwapTotal('give') + selectedSwapTotal('get');
@@ -8216,10 +8270,11 @@
         scrollSwapReviewIntoView();
         return true;
       } catch (error) {
+        comparePartnerSwapCode.lastError = error && error.message ? error.message : 'bad-swap-code';
         swapDraft = null;
         renderSwapResults();
         if (showMessages) {
-          showToast(error && error.message === 'catalog-mismatch'
+          showToast(comparePartnerSwapCode.lastError === 'catalog-mismatch'
             ? 'Swap code is for a different checklist version.'
             : 'Invalid swap code.');
         }
@@ -8235,7 +8290,7 @@
         renderSwapResults();
         return;
       }
-      if (value.includes('STSWAP3.')) {
+      if (extractSwapCodeText(value).includes('STSWAP3.')) {
         comparePartnerSwapCode({ showMessages: false });
       }
     }
@@ -8379,7 +8434,7 @@ You give ${giveTotal}. You get ${getTotal}.`
     if (swapShowTab) swapShowTab.addEventListener('click', () => setSwapStep('show'));
     if (swapScanTab) swapScanTab.addEventListener('click', () => setSwapStep('scan'));
     if (swapReviewTab) swapReviewTab.addEventListener('click', () => setSwapStep('review'));
-    if (swapCopyBtn) swapCopyBtn.addEventListener('click', () => copyTextToClipboard(swapMyCodeEl ? swapMyCodeEl.value : createSwapCode(), 'Text code copied.'));
+    if (swapCopyBtn) swapCopyBtn.addEventListener('click', () => copyTextToClipboard(swapMyCodeEl ? extractSwapCodeText(swapMyCodeEl.value) : createSwapCode(), 'Text code copied.'));
     if (swapShareBtn) swapShareBtn.addEventListener('click', shareSwapCode);
     if (swapScanModeBtn) swapScanModeBtn.addEventListener('click', () => { setSwapStep('scan'); setSwapReceiveMode('scan'); });
     if (swapPasteModeBtn) swapPasteModeBtn.addEventListener('click', () => { setSwapStep('scan'); setSwapReceiveMode('paste'); });
