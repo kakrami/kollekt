@@ -2944,6 +2944,39 @@
       line-height: 1.2;
     }
 
+    #swapModal .swap-single-toggle {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(133, 183, 163, 0.18);
+      border-radius: 999px;
+      background: rgba(4, 12, 10, 0.46);
+      color: rgba(237, 247, 241, 0.84);
+      box-shadow: none;
+      font-size: 17px;
+      font-weight: 950;
+      line-height: 1;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    #swapModal .swap-single-toggle:hover {
+      border-color: rgba(32, 217, 130, 0.38);
+      background: rgba(32, 217, 130, 0.12);
+      color: #8dffc8;
+    }
+
+    #swapModal .swap-single-toggle.active {
+      border-color: rgba(32, 217, 130, 0.72);
+      background: linear-gradient(135deg, #13b56b, #20d982);
+      color: #03140d;
+    }
+
+    #swapModal .swap-single-toggle:active {
+      transform: scale(0.96);
+    }
+
     #swapModal .swap-count-control {
       display: grid;
       grid-template-columns: 30px 34px 30px;
@@ -7728,7 +7761,7 @@
       catalog.rows.forEach((row, index) => {
         if (!isTradeableSwapKey(row.key)) return;
         const count = getDupeCount(row.key);
-        if (count > 0) tokens.push(`${index.toString(36)}-${count.toString(36)}`);
+        if (count > 0) tokens.push(`${index.toString(36)}-1`);
       });
       return tokens.length ? tokens.join('.') : '_';
     }
@@ -7841,7 +7874,7 @@
         const row = catalog.rows[Number.parseInt(indexText, 10)];
         const count = cleanDupeCount(value);
         if (row && count > 0) {
-          dupes[row.id] = count;
+          dupes[row.id] = 1;
           have.add(row.id);
         }
       });
@@ -7857,12 +7890,12 @@
         const myDupeCount = getDupeCount(row.key);
         const partnerHas = partnerPayload.have.has(row.id);
         if (myDupeCount > 0 && !partnerHas) {
-          give.push({ ...row, max: myDupeCount, count: myDupeCount });
+          give.push({ ...row, max: 1, count: 1 });
         }
 
         const partnerDupeCount = cleanDupeCount(partnerPayload.dupes[row.id]);
         if (partnerDupeCount > 0 && !isChecked(row.key)) {
-          get.push({ ...row, max: partnerDupeCount, count: partnerDupeCount });
+          get.push({ ...row, max: 1, count: 1 });
         }
       });
       return { give, get };
@@ -7965,17 +7998,14 @@
 
       return `<div class="swap-list"><div class="swap-list-title"><span>${escapeHtml(title)}</span><span>${selectedTotal}</span></div>${visible.map((item, index) => {
         const count = cleanDupeCount(item.count);
-        const meta = [item.country, item.max + ' available'].filter(Boolean).join(' · ');
+        const selected = count > 0;
+        const meta = [item.country].filter(Boolean).join(' · ');
         return `<div class="swap-item-row">
           <div class="swap-item-copy">
             <div class="swap-item-name" title="${escapeHtml(item.text)}">${escapeHtml(swapItemLabel(item))}</div>
             <div class="swap-item-meta">${escapeHtml(meta)}</div>
           </div>
-          <div class="swap-count-control" aria-label="Trade count">
-            <button type="button" data-swap-action="dec" data-swap-type="${type}" data-swap-index="${index}" ${count <= 0 ? 'disabled' : ''}>−</button>
-            <span class="swap-count-value">${count}</span>
-            <button type="button" data-swap-action="inc" data-swap-type="${type}" data-swap-index="${index}" ${count >= item.max ? 'disabled' : ''}>+</button>
-          </div>
+          <button type="button" class="swap-single-toggle${selected ? ' active' : ''}" data-swap-action="${selected ? 'dec' : 'inc'}" data-swap-type="${type}" data-swap-index="${index}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${selected ? 'Remove from trade' : 'Add to trade'}">${selected ? '✓' : '+'}</button>
         </div>`;
       }).join('')}</div>`;
     }
@@ -8372,7 +8402,10 @@
           lines.push('- None');
           return;
         }
-        selected.forEach(item => lines.push(`- ${swapItemLabel(item)} x${cleanDupeCount(item.count)}`));
+        selected.forEach(item => {
+          const count = cleanDupeCount(item.count);
+          lines.push(`- ${swapItemLabel(item)}${count > 1 ? ` x${count}` : ''}`);
+        });
       };
       addSection('I give', swapDraft.give || []);
       addSection('I get', swapDraft.get || []);
