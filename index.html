@@ -4953,6 +4953,7 @@
       if (nextOpen) {
         closeFilterPanel(false);
         hideCountrySearchSuggestions();
+        if (menu.classList.contains('settings')) updateSetupActionState();
         if (menu.classList.contains('add-menu')) requestAnimationFrame(() => addInput && addInput.focus());
       }
       syncPopoverScrim();
@@ -5230,6 +5231,7 @@
       updateSortButtons();
       updateViewButtons();
       updateEditModeButton();
+      updateSetupActionState();
       listEl.classList.toggle('tiles-view', normalizeViewMode(state.viewMode) === 'tiles');
       listEl.classList.toggle('safe-view', !isEditMode());
 
@@ -5665,7 +5667,7 @@
     }
 
     function updateSetupActionState() {
-      const hasChecklist = BASE_ITEMS.length > 0;
+      const hasChecklist = BASE_ITEMS.length > 0 || uniqueItems(state.added || []).length > 0;
       const hasImages = localImageRecords.length > 0;
 
       if (loadChecklistBtn) loadChecklistBtn.classList.toggle('setup-required', !hasChecklist);
