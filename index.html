@@ -826,8 +826,10 @@
 
     .image-folder-note {
       width: 100%;
+      max-height: 72px;
       margin-top: 2px;
       padding: 6px 8px;
+      overflow: hidden;
       border: 1px solid rgba(133, 183, 163, 0.18);
       border-radius: 8px;
       background: rgba(32, 217, 130, 0.08);
@@ -835,9 +837,21 @@
       font-size: 11px;
       font-weight: 700;
       line-height: 1.35;
+      opacity: 1;
+      transform: translateY(0);
+      transition: max-height 220ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease, transform 180ms ease, margin 220ms cubic-bezier(.2,.8,.2,1), padding 220ms cubic-bezier(.2,.8,.2,1), border-color 180ms ease;
     }
 
-    .image-folder-note.hidden { display: none; }
+    .image-folder-note.hidden {
+      max-height: 0;
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-color: transparent;
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
 
     .list {
       margin-top: 8px;
@@ -1311,6 +1325,8 @@
       .segmented-btn,
       .edit-toggle,
       .edit-btn,
+      .edit-mode-hint,
+      .image-folder-note,
       .view-icon-svg {
         transition: none;
       }
@@ -2036,6 +2052,84 @@
       color: #8dffc8;
     }
 
+    .settings-action-wrap {
+      position: relative;
+      display: grid;
+      min-width: 0;
+    }
+
+    .settings-action-wrap .settings-action-btn {
+      padding-right: 42px;
+    }
+
+    .settings-menu .settings-action-btn.setup-required {
+      border-color: rgba(251, 146, 60, 0.56);
+      background: linear-gradient(135deg, rgba(251, 146, 60, 0.20), rgba(245, 158, 11, 0.08));
+      box-shadow: inset 0 0 0 1px rgba(251, 146, 60, 0.08), 0 0 22px rgba(251, 146, 60, 0.08);
+    }
+
+    .settings-menu .settings-action-btn.setup-required .settings-action-icon {
+      border-color: rgba(251, 146, 60, 0.34);
+      background: rgba(251, 146, 60, 0.15);
+      color: #ffb35c;
+    }
+
+    .settings-menu .settings-action-btn.setup-required .settings-action-title {
+      color: #ffb35c;
+    }
+
+    .setup-info-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      z-index: 2;
+      width: 22px;
+      height: 22px;
+      min-height: 22px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 999px;
+      border-color: rgba(251, 146, 60, 0.50);
+      background: rgba(251, 146, 60, 0.14);
+      color: #ffb35c;
+      font-size: 12px;
+      font-weight: 950;
+      line-height: 1;
+      transform: translateY(-50%);
+      box-shadow: none;
+    }
+
+    .setup-info-btn:hover,
+    .setup-info-btn:focus-visible,
+    .setup-info-btn.active {
+      border-color: rgba(251, 146, 60, 0.82);
+      background: rgba(251, 146, 60, 0.24);
+      color: #ffd08c;
+      box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.12);
+    }
+
+    .setup-info-tooltip {
+      position: fixed;
+      z-index: 95;
+      display: none;
+      width: max-content;
+      max-width: min(280px, calc(100vw - 24px));
+      padding: 9px 10px;
+      border: 1px solid rgba(251, 146, 60, 0.46);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #21170d, #120d08);
+      color: #ffe1ad;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.46), 0 0 24px rgba(251, 146, 60, 0.10);
+      font-size: 11px;
+      font-weight: 760;
+      line-height: 1.35;
+    }
+
+    .setup-info-tooltip.open {
+      display: block;
+    }
+
     .settings-menu .danger {
       color: var(--danger);
       margin-left: 0;
@@ -2085,6 +2179,17 @@
       .settings-menu .settings-action-icon {
         width: 32px;
         height: 32px;
+      }
+
+      .settings-action-wrap .settings-action-btn {
+        padding-right: 39px;
+      }
+
+      .setup-info-btn {
+        right: 9px;
+        width: 21px;
+        height: 21px;
+        min-height: 21px;
       }
 
       .settings-menu .image-folder-note {
@@ -2762,6 +2867,151 @@
     }
 
 
+
+    /* Cleaner progressive Swap Center */
+    .swap-card {
+      width: min(540px, calc(100dvw - 20px));
+      gap: 10px;
+    }
+
+    .swap-head {
+      align-items: center;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .swap-title-wrap {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+    }
+
+    .swap-title-wrap .swap-chip-row {
+      gap: 5px;
+    }
+
+    .swap-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid rgba(133, 183, 163, 0.18);
+      border-radius: 14px;
+      background: rgba(4, 12, 10, 0.58);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .swap-tab {
+      min-width: 0;
+      min-height: 34px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      color: rgba(190, 222, 207, 0.72);
+      box-shadow: none;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .swap-tab:hover {
+      background: rgba(32, 217, 130, 0.08);
+      color: #8dffc8;
+    }
+
+    .swap-tab.active {
+      background: linear-gradient(135deg, #13b56b, #20d982);
+      color: #03140d;
+      box-shadow: 0 10px 24px rgba(32, 217, 130, 0.13);
+    }
+
+    .swap-scroll {
+      gap: 0;
+      padding-right: 0;
+    }
+
+    .swap-section.swap-panel {
+      display: none;
+      gap: 9px;
+      padding: 10px;
+    }
+
+    .swap-section.swap-panel.active {
+      display: grid;
+    }
+
+    .swap-section-title {
+      font-size: 13px;
+    }
+
+    .swap-qr-panel {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .swap-qr-box {
+      --swap-qr-size: min(260px, calc(100dvw - 74px));
+      width: var(--swap-qr-size);
+      height: var(--swap-qr-size);
+      min-width: var(--swap-qr-size);
+      min-height: var(--swap-qr-size);
+      border-radius: 18px;
+    }
+
+    .swap-qr-copy {
+      width: 100%;
+    }
+
+    .swap-primary-actions button,
+    .swap-action-area button,
+    .swap-code-actions button {
+      flex: 1 1 0;
+    }
+
+    .swap-text-details summary {
+      padding: 9px 10px;
+    }
+
+    .swap-text-body {
+      padding: 0 10px 10px;
+    }
+
+    .swap-scan-panel,
+    .swap-manual-panel {
+      padding: 8px;
+    }
+
+    .swap-status {
+      min-height: 18px;
+      text-align: center;
+      transition: color var(--motion-med) var(--motion-ease), opacity var(--motion-med) var(--motion-ease);
+    }
+
+    .swap-video-shell {
+      max-height: min(50dvh, 360px);
+    }
+
+    @media (max-width: 640px) {
+      .swap-card {
+        gap: 8px;
+      }
+
+      .swap-tabs {
+        gap: 2px;
+      }
+
+      .swap-tab {
+        min-height: 32px;
+        padding: 0 7px;
+        font-size: 11px;
+      }
+
+      .swap-section.swap-panel {
+        padding: 8px;
+      }
+    }
+
     /* Keep confirmation/toast UI above the Swap Center overlay */
     #confirmModal.modal-backdrop.open {
       z-index: 240;
@@ -2849,20 +3099,32 @@
 
 
     .edit-mode-hint {
-      display: none;
-      margin: 0 0 8px;
-      padding: 7px 10px;
-      border: 1px solid rgba(255, 220, 130, 0.28);
+      max-height: 0;
+      margin: 0;
+      padding: 0 10px;
+      overflow: hidden;
+      border: 1px solid transparent;
       border-radius: 10px;
       background: rgba(255, 198, 71, 0.08);
       color: #ffe3a3;
       font-size: 11px;
       font-weight: 800;
       line-height: 1.3;
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: max-height var(--motion-slow) var(--motion-ease), opacity var(--motion-med) ease, transform var(--motion-med) var(--motion-ease), margin var(--motion-slow) var(--motion-ease), padding var(--motion-slow) var(--motion-ease), border-color var(--motion-med) ease;
+      will-change: max-height, opacity, transform;
     }
 
     .edit-mode-hint.visible {
-      display: block;
+      max-height: 64px;
+      margin: 0 0 8px;
+      padding: 7px 10px;
+      border-color: rgba(255, 220, 130, 0.28);
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
 
     .popover-scrim {
@@ -3129,17 +3391,22 @@
                 <div class="settings-actions">
                   <div class="settings-section">
                     <div class="settings-section-label">Setup</div>
-                    <button id="loadChecklistBtn" type="button" class="settings-action-btn settings-menu-item" title="Load full checklist TXT" aria-label="Load full checklist TXT">
-                      <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5V4zm2 2v12h10V9h-3V6H7zm2 4h6v2H9v-2zm0 4h6v2H9v-2z"/></svg></span>
-                      <span class="settings-action-copy"><span class="settings-action-title">Load full checklist</span><span class="settings-action-desc">Choose your TXT checklist file</span></span>
-                    </button>
+                    <div class="settings-action-wrap">
+                      <button id="loadChecklistBtn" type="button" class="settings-action-btn settings-menu-item" title="Load full checklist TXT" aria-label="Load full checklist TXT">
+                        <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5V4zm2 2v12h10V9h-3V6H7zm2 4h6v2H9v-2zm0 4h6v2H9v-2z"/></svg></span>
+                        <span class="settings-action-copy"><span class="settings-action-title">Load full checklist</span><span class="settings-action-desc">Choose your TXT checklist file</span></span>
+                      </button>
+                      <button type="button" class="setup-info-btn" data-setup-key="checklist" data-setup-info="Load your full checklist TXT to create the sticker list. This is only the list setup; Reset progress will keep it." aria-label="Checklist setup info">i</button>
+                    </div>
                     <input id="checklistTxtFile" type="file" accept="text/plain,.txt" />
-                    <button id="loadImgFolderBtn" type="button" class="settings-action-btn settings-menu-item" title="Choose images folder" aria-label="Choose images folder">
-                      <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M4 5h5l2 2h9v12H4V5zm2 4v8h12V9H6zm2 6 2.2-3 1.7 2.2 1.2-1.5L16 15H8z"/></svg></span>
-                      <span class="settings-action-copy"><span class="settings-action-title">Choose images folder</span><span class="settings-action-desc">Enable thumbnails and viewer</span></span>
-                    </button>
+                    <div class="settings-action-wrap">
+                      <button id="loadImgFolderBtn" type="button" class="settings-action-btn settings-menu-item" title="Choose images folder" aria-label="Choose images folder">
+                        <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M4 5h5l2 2h9v12H4V5zm2 4v8h12V9H6zm2 6 2.2-3 1.7 2.2 1.2-1.5L16 15H8z"/></svg></span>
+                        <span class="settings-action-copy"><span class="settings-action-title">Choose images folder</span><span class="settings-action-desc">Enable thumbnails and viewer</span></span>
+                      </button>
+                      <button type="button" class="setup-info-btn" data-setup-key="images" data-setup-info="Choose your local img folder so thumbnails and the sticker viewer can load images. Browsers may ask again after reopening the app." aria-label="Images folder setup info">i</button>
+                    </div>
                     <input id="imgFolderInput" type="file" accept="image/*" webkitdirectory directory multiple />
-                    <div id="imageFolderNote" class="image-folder-note">Choose the local img folder so thumbnails and the image viewer can load stickers.</div>
                     <button id="loadTrackerBtn" type="button" class="settings-action-btn settings-menu-item" title="Load saved tracker" aria-label="Load saved tracker">
                       <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4H10l2 2h6.5A2.5 2.5 0 0 1 21 8.5V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6.5zm2.5-.5a.5.5 0 0 0-.5.5V9h14v-.5a.5.5 0 0 0-.5-.5h-7.3l-2-2H5.5zM5 11v7h14v-7H5zm7 6-3-3h2v-2h2v2h2l-3 3z"/></svg></span>
                       <span class="settings-action-copy"><span class="settings-action-title">Load saved tracker</span><span class="settings-action-desc">Restore progress from JSON</span></span>
@@ -3160,9 +3427,13 @@
                   </div>
 
                   <div class="settings-section settings-section-danger">
+                    <button id="resetProgressBtn" type="button" class="settings-action-btn settings-menu-item">
+                      <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.4 9.8l1.8-.8A5 5 0 1 0 12 7H9.8l2.6 2.6L11 11 6 6l5-5 1.4 1.4L9.8 5H12zm-1 5h2v5h-2v-5z"/></svg></span>
+                      <span class="settings-action-copy"><span class="settings-action-title">Reset progress</span><span class="settings-action-desc">Keep checklist and images</span></span>
+                    </button>
                     <button id="resetBtn" type="button" class="danger settings-action-btn settings-menu-item">
                       <span class="settings-action-icon" aria-hidden="true"><svg class="action-icon-svg" viewBox="0 0 24 24"><path d="M7 21a2 2 0 0 1-2-2V8h14v11a2 2 0 0 1-2 2H7zM9 4h6l1 2h4v2H4V6h4l1-2zm1 7v7h2v-7h-2zm4 0v7h2v-7h-2z"/></svg></span>
-                      <span class="settings-action-copy"><span class="settings-action-title">Factory reset</span><span class="settings-action-desc">Clear checklist and progress</span></span>
+                      <span class="settings-action-copy"><span class="settings-action-title">Factory reset</span><span class="settings-action-desc">Clear everything</span></span>
                     </button>
                   </div>
                 </div>
@@ -3241,78 +3512,76 @@
   </div>
 
   <div id="swapModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal-card swap-card" role="dialog" aria-modal="true" aria-labelledby="swapTitle" aria-describedby="swapMessage">
+    <div class="modal-card swap-card" role="dialog" aria-modal="true" aria-labelledby="swapTitle">
       <div class="swap-head">
-        <div>
-          <h2 id="swapTitle" class="modal-title">Swap Center</h2>
-          <p id="swapMessage" class="modal-message">Easy in-person flow: show your QR, scan theirs, then confirm the trade.</p>
-          <div class="swap-flow-steps" aria-hidden="true">
-            <span class="swap-step-pill"><span class="num">1</span>Show</span>
-            <span class="swap-step-pill"><span class="num">2</span>Scan</span>
-            <span class="swap-step-pill"><span class="num">3</span>Confirm</span>
-          </div>
+        <div class="swap-title-wrap">
+          <h2 id="swapTitle" class="modal-title">Swap</h2>
+          <div id="swapMySummary" class="swap-chip-row"></div>
         </div>
         <button id="swapCloseBtn" class="swap-close" type="button" aria-label="Close Swap Center">×</button>
       </div>
+
+      <div class="swap-tabs" role="tablist" aria-label="Swap steps">
+        <button id="swapShowTab" class="swap-tab active" type="button" role="tab" aria-selected="true" aria-controls="swapShowSection" data-swap-step="show">My QR</button>
+        <button id="swapScanTab" class="swap-tab" type="button" role="tab" aria-selected="false" aria-controls="swapScanSection" data-swap-step="scan">Their QR</button>
+        <button id="swapReviewTab" class="swap-tab" type="button" role="tab" aria-selected="false" aria-controls="swapReviewSection" data-swap-step="review">Trade</button>
+      </div>
+
       <div class="swap-scroll">
-        <section class="swap-section">
-          <div class="swap-section-title">1. Show your QR</div>
-          <div id="swapMySummary" class="swap-chip-row"></div>
+        <section id="swapShowSection" class="swap-section swap-panel active" data-swap-panel="show" role="tabpanel" aria-labelledby="swapShowTab">
+          <div class="swap-section-title">Show this</div>
           <div class="swap-qr-panel">
             <div class="swap-qr-box">
               <img id="swapQrImage" src="" alt="Your sticker swap QR code" width="260" height="260" referrerpolicy="no-referrer" />
             </div>
             <div class="swap-qr-copy">
-              <div class="swap-section-note">Have the other person scan this. Use Share if you want to send it in a message.</div>
-              <div class="swap-button-row">
+              <div class="swap-button-row swap-primary-actions">
                 <button id="swapShareBtn" type="button" class="primary">Share</button>
-                <button id="swapCopyBtn" type="button">Copy backup code</button>
+                <button id="swapCopyBtn" type="button">Copy code</button>
               </div>
               <details class="swap-text-details">
-                <summary>Backup text code</summary>
+                <summary>Text code</summary>
                 <div class="swap-text-body">
-                  <div class="swap-inline-note">Only use this if scanning is not convenient.</div>
                   <textarea id="swapMyCode" class="swap-textarea" readonly spellcheck="false" aria-label="Your swap code"></textarea>
-                  <div class="swap-section-note swap-code-note">This shares what you have and your dupe counts only. Images and personal data are not included.</div>
                 </div>
               </details>
             </div>
           </div>
         </section>
-        <section class="swap-section">
-          <div class="swap-section-title">2. Get their code</div>
+
+        <section id="swapScanSection" class="swap-section swap-panel" data-swap-panel="scan" role="tabpanel" aria-labelledby="swapScanTab" hidden>
+          <div class="swap-section-title">Get theirs</div>
           <div class="swap-receive-actions">
-            <button id="swapScanModeBtn" type="button" class="primary" aria-pressed="true">Scan QR</button>
-            <button id="swapPasteModeBtn" type="button" aria-pressed="false">Use backup code</button>
+            <button id="swapScanModeBtn" type="button" class="primary" aria-pressed="true">Scan</button>
+            <button id="swapPasteModeBtn" type="button" aria-pressed="false">Paste code</button>
           </div>
           <div id="swapScanPanel" class="swap-scan-panel" aria-hidden="false">
-            <div id="swapScanStatus" class="swap-status">Open the camera, point it at their QR, and hold steady.</div>
             <div class="swap-video-shell">
               <video id="swapScanVideo" playsinline muted></video>
               <div class="swap-video-guide" aria-hidden="true"></div>
             </div>
             <div class="swap-button-row">
-              <button id="swapStartScanBtn" type="button" class="primary">Open camera</button>
-              <button id="swapStopScanBtn" type="button">Stop camera</button>
+              <button id="swapStartScanBtn" type="button" class="primary">Start camera</button>
+              <button id="swapStopScanBtn" type="button">Stop</button>
             </div>
-            <div class="swap-inline-note">If camera access is blocked or unavailable, use the backup text code instead.</div>
+            <div id="swapScanStatus" class="swap-status">Point camera at their QR.</div>
           </div>
           <div id="swapManualPanel" class="swap-manual-panel collapsed" aria-hidden="true">
-            <div class="swap-paste-helper">Enter the backup text code here, then tap Compare.</div>
-            <textarea id="swapPartnerCode" class="swap-textarea swap-partner-code" spellcheck="false" placeholder="Enter their backup code" aria-label="Their backup swap code"></textarea>
+            <textarea id="swapPartnerCode" class="swap-textarea swap-partner-code" spellcheck="false" placeholder="Paste their text code" aria-label="Their backup swap code"></textarea>
             <div class="swap-button-row swap-code-actions">
               <button id="swapClearPartnerBtn" type="button">Clear</button>
               <button id="swapCompareBtn" type="button" class="primary">Compare</button>
             </div>
           </div>
         </section>
-        <section id="swapReviewSection" class="swap-section">
-          <div class="swap-section-title">3. Review and apply</div>
+
+        <section id="swapReviewSection" class="swap-section swap-panel" data-swap-panel="review" role="tabpanel" aria-labelledby="swapReviewTab" hidden>
+          <div class="swap-section-title">Trade</div>
           <div id="swapResult" class="swap-result"></div>
           <div class="swap-action-area">
             <div class="swap-button-row">
-              <button id="swapCopyTradeBtn" type="button">Copy trade summary</button>
-              <button id="swapApplyTradeBtn" type="button" class="primary">Apply swap</button>
+              <button id="swapCopyTradeBtn" type="button">Copy summary</button>
+              <button id="swapApplyTradeBtn" type="button" class="primary">Apply</button>
             </div>
           </div>
         </section>
@@ -3457,6 +3726,7 @@
     const loadTrackerBtn = document.getElementById('loadTrackerBtn');
     const loadImgFolderBtn = document.getElementById('loadImgFolderBtn');
     const imgFolderInput = document.getElementById('imgFolderInput');
+    const resetProgressBtn = document.getElementById('resetProgressBtn');
     const resetBtn = document.getElementById('resetBtn');
     const filterPanel = document.getElementById('filterPanel');
     const filterToggleBtn = document.getElementById('filterToggleBtn');
@@ -3484,6 +3754,10 @@
     const swapBtn = document.getElementById('swapBtn');
     const swapModalEl = document.getElementById('swapModal');
     const swapCloseBtn = document.getElementById('swapCloseBtn');
+    const swapShowTab = document.getElementById('swapShowTab');
+    const swapScanTab = document.getElementById('swapScanTab');
+    const swapReviewTab = document.getElementById('swapReviewTab');
+    const swapPanelEls = Array.from(document.querySelectorAll('[data-swap-panel]'));
     const swapMySummaryEl = document.getElementById('swapMySummary');
     const swapQrImageEl = document.getElementById('swapQrImage');
     const swapMyCodeEl = document.getElementById('swapMyCode');
@@ -3516,6 +3790,8 @@
     const imageMissingEl = document.getElementById('imageMissing');
     const imagePathEl = document.getElementById('imagePath');
     const imageFolderNoteEl = document.getElementById('imageFolderNote');
+    const setupInfoButtons = Array.from(document.querySelectorAll('.setup-info-btn'));
+    let setupInfoTooltipEl = null;
     const toastEl = document.getElementById('toast');
     const IMAGE_CODE_ALIASES = {
       ALG: 'DZA', DZA: 'ALG',
@@ -3531,6 +3807,7 @@
     let modalResolve = null;
     let txtExportResolve = null;
     let swapDraft = null;
+    let swapActivePanel = 'show';
     let swapInfoTooltipEl = null;
     let swapReceiveMode = 'scan';
     let swapQrDetector = null;
@@ -3998,10 +4275,12 @@
         ? 'Editing is enabled'
         : 'Editing is locked to prevent accidental touches';
       if (editModeHint) {
-        editModeHint.classList.toggle('visible', !isEditMode());
-        editModeHint.textContent = isEditMode()
-          ? 'Edit is on.'
-          : 'Edit is off. Changes are locked to prevent accidental touches.';
+        const locked = !isEditMode();
+        editModeHint.classList.toggle('visible', locked);
+        editModeHint.setAttribute('aria-hidden', locked ? 'false' : 'true');
+        editModeHint.textContent = locked
+          ? 'Edit is off. Changes are locked to prevent accidental touches.'
+          : 'Edit is on.';
       }
 
       addInput.disabled = !isEditMode();
@@ -4649,6 +4928,7 @@
       closeTopMenus();
       closeFilterPanel(false);
       hideCountrySearchSuggestions();
+      hideSetupInfoTooltip();
       document.querySelectorAll('.custom-select.open').forEach(select => select.classList.remove('open'));
       syncPopoverScrim();
     }
@@ -4692,7 +4972,7 @@
 
     if (settingsMenuPanel) {
       settingsMenuPanel.addEventListener('click', event => {
-        const action = event.target.closest('#loadChecklistBtn, #loadImgFolderBtn, #loadTrackerBtn, #exportBtn, #swapBtn, #resetBtn');
+        const action = event.target.closest('#loadChecklistBtn, #loadImgFolderBtn, #loadTrackerBtn, #exportBtn, #swapBtn, #resetProgressBtn, #resetBtn');
         if (action) closeSettingsMenuSoon();
       });
     }
@@ -4738,10 +5018,14 @@
     // Filter outside taps are handled by the single popover scrim.
 
     function showToast(message) {
-      toastEl.textContent = message;
-      toastEl.classList.add('show');
+      if (!toastEl) return;
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+      toastEl.classList.remove('show');
+      window.requestAnimationFrame(() => {
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+      });
     }
 
     function closeConfirmModal(value) {
@@ -4796,6 +5080,7 @@
       updateSortButtons();
       updateViewButtons();
       updateEditModeButton();
+      updateSetupActionState();
       listEl.classList.toggle('tiles-view', normalizeViewMode(state.viewMode) === 'tiles');
       listEl.classList.toggle('safe-view', !isEditMode());
     }
@@ -5277,11 +5562,67 @@
       localImageUrls = [];
     }
 
-    function updateImageFolderNote() {
-      if (!imageFolderNoteEl) return;
+    function updateSetupActionState() {
+      const hasChecklist = BASE_ITEMS.length > 0;
       const hasImages = localImageRecords.length > 0;
-      imageFolderNoteEl.hidden = hasImages;
-      imageFolderNoteEl.classList.toggle('hidden', hasImages);
+
+      if (loadChecklistBtn) loadChecklistBtn.classList.toggle('setup-required', !hasChecklist);
+      if (loadImgFolderBtn) loadImgFolderBtn.classList.toggle('setup-required', !hasImages);
+
+      setupInfoButtons.forEach(btn => {
+        const key = btn.dataset.setupKey;
+        const required = key === 'checklist' ? !hasChecklist : key === 'images' ? !hasImages : false;
+        btn.classList.toggle('setup-required', required);
+        btn.title = required ? 'Setup info' : 'Info';
+      });
+
+      if (imageFolderNoteEl) {
+        imageFolderNoteEl.hidden = false;
+        imageFolderNoteEl.classList.toggle('hidden', hasImages);
+        imageFolderNoteEl.setAttribute('aria-hidden', hasImages ? 'true' : 'false');
+      }
+    }
+
+    function updateImageFolderNote() {
+      updateSetupActionState();
+    }
+
+    function ensureSetupInfoTooltip() {
+      if (setupInfoTooltipEl) return setupInfoTooltipEl;
+      setupInfoTooltipEl = document.createElement('div');
+      setupInfoTooltipEl.id = 'setupInfoTooltip';
+      setupInfoTooltipEl.className = 'setup-info-tooltip';
+      setupInfoTooltipEl.setAttribute('role', 'tooltip');
+      document.body.appendChild(setupInfoTooltipEl);
+      return setupInfoTooltipEl;
+    }
+
+    function hideSetupInfoTooltip() {
+      if (setupInfoTooltipEl) setupInfoTooltipEl.classList.remove('open');
+      setupInfoButtons.forEach(btn => btn.classList.remove('active'));
+    }
+
+    function showSetupInfoTooltip(anchor) {
+      if (!anchor) return;
+      const tooltip = ensureSetupInfoTooltip();
+      const isSameOpen = tooltip.classList.contains('open') && anchor.classList.contains('active');
+      hideSetupInfoTooltip();
+      if (isSameOpen) return;
+
+      tooltip.textContent = anchor.dataset.setupInfo || '';
+      tooltip.classList.add('open');
+      anchor.classList.add('active');
+      anchor.setAttribute('aria-describedby', tooltip.id);
+
+      const rect = anchor.getBoundingClientRect();
+      const margin = 12;
+      const width = tooltip.offsetWidth;
+      const height = tooltip.offsetHeight;
+      let left = Math.min(window.innerWidth - width - margin, Math.max(margin, rect.right - width));
+      let top = rect.bottom + 8;
+      if (top + height + margin > window.innerHeight) top = Math.max(margin, rect.top - height - 8);
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
     }
 
     function indexLocalImageFolder(files) {
@@ -7352,6 +7693,25 @@
       return swapInfoTooltipEl;
     }
 
+    function setSwapStep(step) {
+      const nextStep = ['show', 'scan', 'review'].includes(step) ? step : 'show';
+      swapActivePanel = nextStep;
+      const tabMap = { show: swapShowTab, scan: swapScanTab, review: swapReviewTab };
+      Object.entries(tabMap).forEach(([key, tab]) => {
+        if (!tab) return;
+        const active = key === nextStep;
+        tab.classList.toggle('active', active);
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        tab.setAttribute('tabindex', active ? '0' : '-1');
+      });
+      swapPanelEls.forEach(panel => {
+        const active = panel.dataset.swapPanel === nextStep;
+        panel.classList.toggle('active', active);
+        panel.hidden = !active;
+      });
+      if (nextStep !== 'scan') stopSwapQrScanner({ silent: true });
+    }
+
     function hideSwapInfoTooltip() {
       if (!swapInfoTooltipEl) return;
       swapInfoTooltipEl.classList.remove('open');
@@ -7481,11 +7841,12 @@
       }
       if (swapReceiveMode !== 'scan') stopSwapQrScanner({ silent: true });
       if (swapReceiveMode === 'scan' && !canScanSwapQr()) {
-        setSwapScanStatus('This browser cannot scan QR codes here. Use the backup text code instead.', 'warn');
+        setSwapScanStatus('Use the text code.', 'warn');
       }
     }
 
     function scrollSwapReviewIntoView() {
+      setSwapStep('review');
       if (!swapReviewSectionEl) return;
       const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const scroller = swapReviewSectionEl.closest('.swap-scroll');
@@ -7528,7 +7889,7 @@
       swapPartnerCodeEl.value = String(rawValue).trim();
       const ok = comparePartnerSwapCode({ showMessages: false });
       if (ok) {
-        setSwapScanStatus('QR captured. Trade options are ready below.', 'success');
+        setSwapScanStatus('QR captured.', 'success');
         stopSwapQrScanner({ silent: true });
         scrollSwapReviewIntoView();
         return true;
@@ -7556,7 +7917,7 @@
     async function startSwapQrScanner() {
       if (!canScanSwapQr()) {
         setSwapReceiveMode('paste');
-        showToast('QR scanning is not supported here. Use the backup code.');
+        showToast('QR scanning is not supported here. Paste their code.');
         return;
       }
       setSwapReceiveMode('scan');
@@ -7569,11 +7930,11 @@
           await swapScanVideoEl.play();
         }
         swapScannerActive = true;
-        setSwapScanStatus('Camera is on. Hold their QR inside the guide box.', 'success');
+        setSwapScanStatus('Camera is on.', 'success');
         swapQrScanFrame = requestAnimationFrame(detectSwapQrFrame);
       } catch (error) {
         stopSwapQrScanner({ silent: true });
-        setSwapScanStatus('Camera access was blocked. Use the backup text code instead.', 'warn');
+        setSwapScanStatus('Camera blocked. Paste their code.', 'warn');
         setSwapReceiveMode('paste');
       }
     }
@@ -7650,11 +8011,12 @@
       updateSwapMySummary();
       renderSwapResults();
       setSwapReceiveMode(canScanSwapQr() ? 'scan' : 'paste');
-      setSwapScanStatus(canScanSwapQr() ? 'Open the camera, point it at their QR, and hold steady.' : 'This browser cannot scan QR codes here. Use the backup text code instead.', canScanSwapQr() ? '' : 'warn');
+      setSwapStep('show');
+      setSwapScanStatus(canScanSwapQr() ? 'Point camera at their QR.' : 'Use the text code.', canScanSwapQr() ? '' : 'warn');
       lockModalPageScroll();
       swapModalEl.classList.add('open');
       swapModalEl.setAttribute('aria-hidden', 'false');
-      activateModalFocus(swapModalEl, canScanSwapQr() ? swapStartScanBtn : swapPasteModeBtn);
+      activateModalFocus(swapModalEl, swapShareBtn || swapCloseBtn);
       requestAnimationFrame(() => {
         const swapScrollEl = swapModalEl.querySelector('.swap-scroll');
         if (swapScrollEl) swapScrollEl.scrollTop = 0;
@@ -7716,7 +8078,7 @@
       if (!rawCode) {
         swapDraft = null;
         renderSwapResults();
-        if (showMessages) showToast('Paste their swap code first.');
+        if (showMessages) showToast('Paste their code first.');
         return false;
       }
 
@@ -7821,6 +8183,28 @@ You give ${giveTotal}. You get ${getTotal}.`
       showToast('Swap applied.');
     }
 
+    async function resetProgress() {
+      const hasList = BASE_ITEMS.length || uniqueItems(state.added || []).length;
+      if (!hasList) {
+        showToast('Load a checklist first.');
+        return;
+      }
+      const dupeTotal = Object.values(state.dupes || {}).reduce((sum, value) => sum + cleanDupeCount(value), 0);
+      const checkedTotal = Object.keys(state.checked || {}).length;
+      const ok = await confirmAction({
+        title: 'Reset progress?',
+        message: `This will uncheck ${checkedTotal} sticker${checkedTotal === 1 ? '' : 's'} and clear ${dupeTotal} duplicate${dupeTotal === 1 ? '' : 's'}. Your checklist, images, added items, hidden items, and settings stay as-is.`,
+        confirmText: 'Reset progress',
+        cancelText: 'Cancel',
+        danger: true
+      });
+      if (!ok) return;
+      state = normalizeState({ ...state, checked: {}, dupes: {} });
+      saveState();
+      render();
+      showToast('Progress reset.');
+    }
+
     async function resetAll() {
       const ok = await confirmAction({
         title: 'Reset tracker?',
@@ -7862,16 +8246,19 @@ You give ${giveTotal}. You get ${getTotal}.`
       });
     }
     if (swapCloseBtn) swapCloseBtn.addEventListener('click', closeSwapCenter);
+    if (swapShowTab) swapShowTab.addEventListener('click', () => setSwapStep('show'));
+    if (swapScanTab) swapScanTab.addEventListener('click', () => setSwapStep('scan'));
+    if (swapReviewTab) swapReviewTab.addEventListener('click', () => setSwapStep('review'));
     if (swapCopyBtn) swapCopyBtn.addEventListener('click', () => copyTextToClipboard(swapMyCodeEl ? swapMyCodeEl.value : createSwapCode(), 'Backup code copied.'));
     if (swapShareBtn) swapShareBtn.addEventListener('click', shareSwapCode);
-    if (swapScanModeBtn) swapScanModeBtn.addEventListener('click', () => setSwapReceiveMode('scan'));
-    if (swapPasteModeBtn) swapPasteModeBtn.addEventListener('click', () => setSwapReceiveMode('paste'));
+    if (swapScanModeBtn) swapScanModeBtn.addEventListener('click', () => { setSwapStep('scan'); setSwapReceiveMode('scan'); });
+    if (swapPasteModeBtn) swapPasteModeBtn.addEventListener('click', () => { setSwapStep('scan'); setSwapReceiveMode('paste'); });
     if (swapStartScanBtn) swapStartScanBtn.addEventListener('click', startSwapQrScanner);
     if (swapStopScanBtn) swapStopScanBtn.addEventListener('click', () => stopSwapQrScanner());
     if (swapClearPartnerBtn) swapClearPartnerBtn.addEventListener('click', clearPartnerSwapCode);
     if (swapCompareBtn) swapCompareBtn.addEventListener('click', () => comparePartnerSwapCode());
     if (swapPartnerCodeEl) {
-      swapPartnerCodeEl.addEventListener('focus', () => setSwapReceiveMode('paste'));
+      swapPartnerCodeEl.addEventListener('focus', () => { setSwapStep('scan'); setSwapReceiveMode('paste'); });
       swapPartnerCodeEl.addEventListener('paste', () => setTimeout(maybeAutoComparePartnerCode, 40));
       swapPartnerCodeEl.addEventListener('input', () => {
         if (!swapPartnerCodeEl.value.trim()) {
@@ -7908,7 +8295,10 @@ You give ${giveTotal}. You get ${getTotal}.`
       if (event.key === 'Escape') hideSwapInfoTooltip();
     });
 
-    window.addEventListener('resize', hideSwapInfoTooltip);
+    window.addEventListener('resize', () => {
+      hideSwapInfoTooltip();
+      hideSetupInfoTooltip();
+    });
 
     updateFilterPanelState();
     if (filterToggleBtn) filterToggleBtn.addEventListener('click', toggleFilterPanel);
@@ -8008,6 +8398,14 @@ You give ${giveTotal}. You get ${getTotal}.`
       });
     }
 
+    setupInfoButtons.forEach(btn => {
+      btn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        showSetupInfoTooltip(btn);
+      });
+    });
+
     // Search outside taps are handled by the single popover scrim.
 
     function updateSearchClearButton() {
@@ -8077,6 +8475,12 @@ You give ${giveTotal}. You get ${getTotal}.`
       indexLocalImageFolder(event.target.files);
       render();
     });
+    if (resetProgressBtn) {
+      resetProgressBtn.addEventListener('click', () => {
+        closeSettingsMenuNow();
+        resetProgress();
+      });
+    }
     resetBtn.addEventListener('click', () => {
       closeSettingsMenuNow();
       resetAll();
