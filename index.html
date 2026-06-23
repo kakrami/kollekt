@@ -6279,6 +6279,7 @@
       countryOptionsSignature = '';
       saveState();
       render();
+      refreshOpenSwapCenter();
     }
 
     function importChecklistTxt(file) {
@@ -6338,6 +6339,7 @@
           saveState();
           importFile.value = '';
           render();
+          refreshOpenSwapCenter();
           showToast('Backup restored.');
         } catch (err) {
           showToast('Restore failed. Choose a backup JSON saved from this app.');
@@ -6354,6 +6356,23 @@
         hash = Math.imul(hash, 0x01000193) >>> 0;
       }
       return hash.toString(36);
+    }
+
+    function normalizeSwapCatalogText(text) {
+      const clean = repairTextEncoding(text)
+        .normalize ? repairTextEncoding(text).normalize('NFKD') : repairTextEncoding(text);
+      return clean
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[\u2010-\u2015]/g, '-')
+        .replace(/[^a-z0-9]+/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
+
+    function stableSwapCatalogId(item) {
+      const code = extractItemCode(item.text);
+      return code ? `c:${code.toUpperCase()}` : `t:${normalizeSwapCatalogText(item.text)}`;
     }
 
     function isTradeableSwapKey(key) {
@@ -6381,7 +6400,7 @@
 
       const rows = baseRows.map(item => {
         const code = extractItemCode(item.text);
-        const id = code && codeCounts.get(code) === 1 ? 'c:' + code : 'k:' + item.key;
+        const id = code && codeCounts.get(code) === 1 ? 'c:' + code : stableSwapCatalogId(item);
         return {
           id,
           key: item.key,
@@ -6392,10 +6411,15 @@
         };
       });
 
-      const hash = fnv1aHash(rows.map(row => `${row.id}|${row.text}`).join('\n'));
+      const stableSignature = rows.map(row => row.id).join('\n');
+      const legacySignature = rows.map(row => `${row.id}|${row.text}`).join('\n');
+      const hash = fnv1aHash(stableSignature);
+      const legacyHash = fnv1aHash(legacySignature);
       return {
         rows,
         hash,
+        legacyHash,
+        count: rows.length,
         byId: new Map(rows.map(row => [row.id, row])),
         byKey: new Map(rows.map(row => [row.key, row]))
       };
@@ -7724,10 +7748,12 @@
 
     function createSwapPayload() {
       const catalog = buildSwapItemCatalog();
+      if (!catalog.rows.length) return null;
       return {
         type: 'panini-swap-compact',
-        v: 3,
+        v: 4,
         c: catalog.hash,
+        n: catalog.count,
         h: encodeHaveBitset(catalog),
         d: encodeCompactDupes(catalog)
       };
@@ -7735,7 +7761,8 @@
 
     function createSwapCode() {
       const payload = createSwapPayload();
-      return `STSWAP3.${payload.c}.${payload.h}.${payload.d}`;
+      if (!payload) return '';
+      return `STSWAP4.${payload.c}.${payload.n.toString(36)}.${payload.h}.${payload.d}`;
     }
 
     function compactSwapCodeText(value) {
@@ -7758,8 +7785,10 @@
 
       for (const candidate of candidates) {
         const clean = compactSwapCodeText(candidate);
-        const match = clean.match(/STSWAP3\.[A-Za-z0-9]+\.[A-Za-z0-9_-]*\.[A-Za-z0-9._-]+/i);
-        if (match) return match[0];
+        const v4Match = clean.match(/STSWAP4\.[A-Za-z0-9]+\.[A-Za-z0-9]+\.[A-Za-z0-9_-]*\.[A-Za-z0-9._-]+/i);
+        if (v4Match) return v4Match[0];
+        const v3Match = clean.match(/STSWAP3\.[A-Za-z0-9]+\.[A-Za-z0-9_-]*\.[A-Za-z0-9._-]+/i);
+        if (v3Match) return v3Match[0];
       }
 
       return compactSwapCodeText(text);
@@ -7768,21 +7797,40 @@
     function decodeSwapCode(raw) {
       const text = extractSwapCodeText(raw);
       if (!text) throw new Error('empty');
+      const compactV4 = text.match(/^STSWAP4\.([A-Za-z0-9]+)\.([A-Za-z0-9]+)\.([A-Za-z0-9_-]*)\.([A-Za-z0-9._-]+)$/i);
+      if (compactV4) {
+        return {
+          type: 'panini-swap-compact',
+          v: 4,
+          c: compactV4[1].toLowerCase(),
+          n: Number.parseInt(compactV4[2], 36),
+          h: compactV4[3],
+          d: compactV4[4]
+        };
+      }
+
       const compactV3 = text.match(/^STSWAP3\.([A-Za-z0-9]+)\.([A-Za-z0-9_-]*)\.([A-Za-z0-9._-]+)$/i);
-      if (!compactV3) throw new Error('bad-swap-code');
-      return {
-        type: 'panini-swap-compact',
-        v: 3,
-        c: compactV3[1],
-        h: compactV3[2],
-        d: compactV3[3]
-      };
+      if (compactV3) {
+        return {
+          type: 'panini-swap-compact',
+          v: 3,
+          c: compactV3[1].toLowerCase(),
+          h: compactV3[2],
+          d: compactV3[3]
+        };
+      }
+
+      throw new Error('bad-swap-code');
     }
 
     function normalizeSwapPayload(data) {
-      if (!data || typeof data !== 'object' || data.type !== 'panini-swap-compact' || data.v !== 3) throw new Error('bad-payload');
+      if (!data || typeof data !== 'object' || data.type !== 'panini-swap-compact' || ![3, 4].includes(data.v)) throw new Error('bad-payload');
       const catalog = buildSwapItemCatalog();
-      if (data.c !== catalog.hash) throw new Error('catalog-mismatch');
+      if (!catalog.rows.length) throw new Error('empty-catalog');
+      const knownHashes = new Set([catalog.hash, catalog.legacyHash].filter(Boolean).map(value => String(value).toLowerCase()));
+      const incomingHash = String(data.c || '').toLowerCase();
+      if (data.v === 4 && Number.isInteger(data.n) && data.n !== catalog.rows.length) throw new Error('catalog-mismatch');
+      if (!knownHashes.has(incomingHash)) throw new Error('catalog-mismatch');
       const have = new Set();
       const dupes = {};
       decodeHaveBitset(data.h || '', catalog.rows.length).forEach(index => {
@@ -8052,7 +8100,7 @@
 
       const reason = comparePartnerSwapCode.lastError || '';
       if (reason === 'catalog-mismatch') {
-        setSwapScanStatus('Different checklist. Browse the same checklist, then scan again.', 'warn');
+        setSwapScanStatus('Checklist mismatch. Refresh their QR after both phones browse the same checklist.', 'warn');
       } else if (reason === 'empty') {
         setSwapScanStatus('QR has no readable swap code.', 'error');
       } else {
@@ -8176,6 +8224,18 @@
       });
     }
 
+    function refreshOpenSwapCenter() {
+      if (!swapModalEl || !swapModalEl.classList.contains('open')) return;
+      swapDraft = null;
+      if (swapMyCodeEl) swapMyCodeEl.value = createSwapCode();
+      if (swapPartnerCodeEl) swapPartnerCodeEl.value = '';
+      updateSwapQr();
+      updateSwapMySummary();
+      renderSwapResults();
+      setSwapScanStatus(canScanSwapQr() ? 'QR refreshed for this checklist.' : 'Paste their text code.', canScanSwapQr() ? 'success' : 'warn');
+      if (swapActivePanel === 'review') setSwapStep('show');
+    }
+
     function openSwapCenter() {
       if (!swapModalEl) return;
       swapDraft = null;
@@ -8275,7 +8335,7 @@
         renderSwapResults();
         if (showMessages) {
           showToast(comparePartnerSwapCode.lastError === 'catalog-mismatch'
-            ? 'Swap code is for a different checklist version.'
+            ? 'Checklist mismatch. Refresh their QR after both phones browse the same checklist.'
             : 'Invalid swap code.');
         }
         return false;
@@ -8290,7 +8350,7 @@
         renderSwapResults();
         return;
       }
-      if (extractSwapCodeText(value).includes('STSWAP3.')) {
+      if (/STSWAP[34]\./i.test(extractSwapCodeText(value))) {
         comparePartnerSwapCode({ showMessages: false });
       }
     }
