@@ -2686,6 +2686,33 @@
       color: #fbbf24;
     }
 
+    #swapModal .swap-status-row {
+      min-height: 36px;
+      display: grid;
+      align-items: center;
+      justify-items: start;
+    }
+
+    #swapModal .swap-balance-badge {
+      display: inline-grid;
+      grid-template-columns: minmax(112px, auto) 20px;
+      align-items: center;
+      column-gap: 8px;
+      min-width: 164px;
+    }
+
+    #swapModal .swap-balance-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #swapModal .swap-info-btn.swap-info-placeholder {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     #swapModal .swap-totals {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4885,7 +4912,14 @@
       }
       if (el.matches('#swapModal .swap-panel')) return 'swap-panel:' + (el.dataset.swapPanel || motionSiblingIndex(el));
       if (el.matches('#swapModal .swap-scan-panel, #swapModal .swap-manual-panel')) return 'swap-mode:' + (el.id || motionSiblingIndex(el));
-      if (el.matches('#swapResult > *')) return 'swap-result:' + hashMotionText(el.textContent) + ':' + motionSiblingIndex(el);
+      if (el.matches('#swapResult > *')) {
+        if (el.dataset.layoutKey) return 'swap-result:' + el.dataset.layoutKey;
+        if (el.classList.contains('swap-empty-card')) return 'swap-result:empty';
+        if (el.classList.contains('swap-balance-badge')) return 'swap-result:balance';
+        if (el.classList.contains('swap-totals')) return 'swap-result:totals';
+        if (el.classList.contains('swap-lists')) return 'swap-result:lists';
+        return 'swap-result:' + motionSiblingIndex(el);
+      }
       if (isLayoutSizeMotionElement(el)) return 'layout-size:' + (el.dataset.layoutKey || el.id || hashMotionText(el.className));
       if (el.dataset.layoutKey) return 'layout-key:' + el.dataset.layoutKey;
       if (el.matches('[data-layout-motion]')) return 'layout-motion:' + (el.id || el.dataset.itemKey || el.dataset.historyId || el.dataset.cartRowKey || hashMotionText(el.textContent)) + ':' + motionSiblingIndex(el);
@@ -5018,6 +5052,8 @@
 
     function shouldWatchLayoutInteraction(event) {
       if (!event || prefersReducedLayoutMotion() || layoutMotionDepth > 0) return false;
+      const target = event.target;
+      if (target && target.closest && target.closest('#swapResult [data-swap-action]')) return false;
       if (event.type === 'keydown') {
         return ['Enter', ' ', 'Escape', 'Backspace', 'Delete'].includes(event.key);
       }
@@ -10312,24 +10348,31 @@
       tooltip.style.visibility = '';
     }
 
+    function swapItemDomKey(type, item, index) {
+      return [type, item.id || item.key || item.code || index].filter(Boolean).join(':');
+    }
+
     function renderSwapList(type, title, emptyText) {
       const list = swapDraft && swapDraft[type] ? swapDraft[type] : [];
-      const visible = list.filter(item => item.max > 0);
-      const selectedTotal = visible.reduce((sum, item) => sum + cleanDupeCount(item.count), 0);
+      const visible = list
+        .map((item, index) => ({ item, index }))
+        .filter(entry => entry.item.max > 0);
+      const selectedTotal = visible.reduce((sum, entry) => sum + cleanDupeCount(entry.item.count), 0);
       if (!visible.length) {
-        return `<div class="swap-list"><div class="swap-list-title"><span>${escapeHtml(title)}</span><span>0</span></div><div class="swap-result-empty">${escapeHtml(emptyText)}</div></div>`;
+        return `<div class="swap-list" data-layout-key="${escapeHtml(type)}-list"><div class="swap-list-title"><span>${escapeHtml(title)}</span><span>0</span></div><div class="swap-result-empty">${escapeHtml(emptyText)}</div></div>`;
       }
 
-      return `<div class="swap-list"><div class="swap-list-title"><span>${escapeHtml(title)}</span><span>${selectedTotal}</span></div>${visible.map((item, index) => {
+      return `<div class="swap-list" data-layout-key="${escapeHtml(type)}-list"><div class="swap-list-title"><span>${escapeHtml(title)}</span><span>${selectedTotal}</span></div>${visible.map(({ item, index }) => {
         const count = cleanDupeCount(item.count);
         const selected = count > 0;
         const meta = [item.country].filter(Boolean).join(' · ');
-        return `<div class="swap-item-row">
+        const rowKey = swapItemDomKey(type, item, index);
+        return `<div class="swap-item-row" data-layout-key="${escapeHtml(rowKey)}" data-swap-type="${escapeHtml(type)}" data-swap-index="${index}">
           <div class="swap-item-copy">
             <div class="swap-item-name" title="${escapeHtml(item.text)}">${escapeHtml(swapItemLabel(item))}</div>
             <div class="swap-item-meta">${escapeHtml(meta)}</div>
           </div>
-          <button type="button" class="swap-single-toggle${selected ? ' active' : ''}" data-swap-action="${selected ? 'dec' : 'inc'}" data-swap-type="${type}" data-swap-index="${index}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${selected ? 'Remove from trade' : 'Add to trade'}">${selected ? '✓' : '+'}</button>
+          <button type="button" class="swap-single-toggle${selected ? ' active' : ''}" data-swap-action="${selected ? 'dec' : 'inc'}" data-swap-type="${escapeHtml(type)}" data-swap-index="${index}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${selected ? 'Remove from trade' : 'Add to trade'}">${selected ? '✓' : '+'}</button>
         </div>`;
       }).join('')}</div>`;
     }
@@ -10338,7 +10381,7 @@
       hideSwapInfoTooltip();
       if (!swapResultEl) return;
       if (!swapDraft) {
-        swapResultEl.innerHTML = '<div class="swap-empty-card"><div class="swap-empty-icon">⇄</div><strong>No trade yet</strong><div>Add their code to compare dupes.</div></div>';
+        swapResultEl.innerHTML = '<div class="swap-empty-card" data-layout-key="empty"><div class="swap-empty-icon">⇄</div><strong>No trade yet</strong><div>Add their code to compare dupes.</div></div>';
         if (swapCopyTradeBtn) swapCopyTradeBtn.disabled = true;
         if (swapApplyTradeBtn) swapApplyTradeBtn.disabled = true;
         return;
@@ -10348,20 +10391,26 @@
       const getTotal = selectedSwapTotal('get');
       const hasTrade = giveTotal > 0 || getTotal > 0;
       const isUnevenSwap = hasTrade && giveTotal !== getTotal;
-      const unevenInfoButton = isUnevenSwap
-        ? '<button type="button" class="swap-info-btn" data-swap-info="uneven" aria-label="Why this trade is uneven" aria-expanded="false">i</button>'
-        : '';
+      const infoButtonClass = isUnevenSwap ? 'swap-info-btn' : 'swap-info-btn swap-info-placeholder';
+      const infoButtonAttrs = isUnevenSwap
+        ? 'data-swap-info="uneven" aria-label="Why this trade is uneven" aria-expanded="false"'
+        : 'aria-hidden="true" tabindex="-1" disabled';
       const balanceLabel = hasTrade
         ? (isUnevenSwap ? 'Uneven trade' : 'Even trade')
         : 'No matching trade';
 
       swapResultEl.innerHTML = `
-        <div class="swap-balance-badge${isUnevenSwap ? ' warning' : ''}">${balanceLabel}${unevenInfoButton}</div>
-        <div class="swap-totals">
+        <div class="swap-status-row" data-layout-key="status">
+          <div class="swap-balance-badge${isUnevenSwap ? ' warning' : ''}" data-layout-key="balance">
+            <span class="swap-balance-text">${escapeHtml(balanceLabel)}</span>
+            <button type="button" class="${infoButtonClass}" ${infoButtonAttrs}>i</button>
+          </div>
+        </div>
+        <div class="swap-totals" data-layout-key="totals">
           <div class="swap-total-card${isUnevenSwap ? ' warning' : ''}"><div class="swap-total-number">${giveTotal}</div><div class="swap-total-label-row"><div class="swap-total-label">You give</div></div></div>
           <div class="swap-total-card${isUnevenSwap ? ' warning' : ''}"><div class="swap-total-number">${getTotal}</div><div class="swap-total-label-row"><div class="swap-total-label">You get</div></div></div>
         </div>
-        <div class="swap-lists">
+        <div class="swap-lists" data-layout-key="lists">
           ${renderSwapList('give', 'Give', 'Nothing to give from your dupes.')}
           ${renderSwapList('get', 'Get', 'Nothing you need from their dupes.')}
         </div>`;
@@ -10711,11 +10760,33 @@
       }
     }
 
-    function adjustSwapDraftCount(type, index, delta) {
+    function adjustSwapDraftCount(type, index, delta, anchorEl = null) {
       if (!swapDraft || !swapDraft[type] || !swapDraft[type][index]) return;
       const item = swapDraft[type][index];
-      item.count = Math.max(0, Math.min(item.max, cleanDupeCount(item.count) + delta));
+      const nextCount = Math.max(0, Math.min(item.max, cleanDupeCount(item.count) + delta));
+      if (nextCount === cleanDupeCount(item.count)) return;
+
+      const reviewScrollTop = swapReviewSectionEl ? swapReviewSectionEl.scrollTop : 0;
+      const anchorRow = anchorEl && anchorEl.closest ? anchorEl.closest('.swap-item-row') : null;
+      const anchorTop = anchorRow ? anchorRow.getBoundingClientRect().top : null;
+      const anchorType = anchorRow && anchorRow.dataset ? anchorRow.dataset.swapType : type;
+      const anchorIndex = anchorRow && anchorRow.dataset ? anchorRow.dataset.swapIndex : String(index);
+
+      item.count = nextCount;
       renderSwapResults();
+
+      const restoreReviewScroll = () => {
+        if (!swapReviewSectionEl || swapActivePanel !== 'review') return;
+        swapReviewSectionEl.scrollTop = reviewScrollTop;
+        if (anchorTop === null || !swapResultEl) return;
+        const nextAnchor = swapResultEl.querySelector(`.swap-item-row[data-swap-type="${anchorType}"][data-swap-index="${anchorIndex}"]`);
+        if (!nextAnchor) return;
+        const deltaTop = nextAnchor.getBoundingClientRect().top - anchorTop;
+        if (Math.abs(deltaTop) > 0.5) swapReviewSectionEl.scrollTop += deltaTop;
+      };
+
+      restoreReviewScroll();
+      requestAnimationFrame(restoreReviewScroll);
     }
 
     function tradeSummaryText() {
@@ -10938,8 +11009,10 @@ You give ${giveTotal}. You get ${getTotal}.`
         }
         const btn = event.target.closest('[data-swap-action]');
         if (!btn) return;
+        event.preventDefault();
+        event.stopPropagation();
         const delta = btn.dataset.swapAction === 'inc' ? 1 : -1;
-        adjustSwapDraftCount(btn.dataset.swapType, Number.parseInt(btn.dataset.swapIndex, 10), delta);
+        adjustSwapDraftCount(btn.dataset.swapType, Number.parseInt(btn.dataset.swapIndex, 10), delta, btn);
       });
     }
 
